@@ -1,0 +1,18 @@
+{% extends './base.html' %}
+{% block content %}
+{% load static %}
+
+{% if profile_user %}
+    <div align="center">
+        <img src="{{ profile_user_profile.profile_pic.url }}" width="200px"/>
+        <p>{{ profile_user_profile.full_name }} (@{{ profile_user.username}})</p>
+        <p> {{ profile_user_profile.bio }}</p>
+    </div>
+{% else %}
+    <p> 404 User Not Found</p>
+{% endif %}
+
+	{% block subcontent %}
+	{% endblock subcontent %}
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends './base.html' %}
+{% block content %}
+{% load static %}
+
+    {% csrf_token %}
+<div style="text-align:center">
+    <div style="width:50%;background-color:white;margin:auto;padding:50px">
+        <p style="font-size:25px"> Let's fill out your profile</p>
+        <form method="POST" class="post-form" action="{% url 'post_profile' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Ready To Ramble</button>
+        </form>
+        <!--
+        <div class="imgupload" align="center">
+            <label for="file-input">
+                <img src="{% static 'images/upload.png' %}" width="200"/>
+            </label>
+            <input id="file-input" type="file"/>
+
+            <p> Upload a picture </p>
+        </div>
+        <br>
+        <div align="center" style="padding:10px">
+            <input type="text" id="profile_full_name" name="user_full_name" maxlength="40" minlength="3"
+               placeholder="Your Name" style="width:250px;padding:10px" padding="10px"/>
+        </div>
+        <div align="center" style="padding:10px">
+            <textarea name="bio text" id="profile_bio" style="width:250px;height:150px;padding-left:10px;padding-right:10px;padding-top:10px"
+                  placeholder="Bio"></textarea>
+        <br/>
+        </div>
+        <div align="right">
+            <button id="submit_profile">Ready To Ramble!</button>
+        </div>
+        -->
+    </div>
+</div>
+
+{% endblock %}

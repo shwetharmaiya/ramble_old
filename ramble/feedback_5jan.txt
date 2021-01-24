@@ -1,0 +1,25 @@
+lore feedback:
+
+Too few choices 
+
+one chapter is super long 
+
+make all chapters even length. 
+
+edit down the names in the first pass. 
+
+have a snippet of the chapter text along with the question
+
+if the choices are more grounded, the reader feels more invested in the choice, whereas with the fantastical choices, it's more a matter of preference. 
+
+grounded vs fantastical branches set expectations depending on which path you first choose. 
+
+with fewer endings you can keep people more engaged (like bandersnatch does). 
+
+iridescent is overused - use synonyms (opalescent). describe the color more, rather. 
+
+recode with fragments to see the whole picture
+
+add a bookmarks side bar where you can see all the bookmarke pages. that's kind of like people keep their finger on the previous choice page. 
+
+should everything just be a web app with a javascript voice to text? https://demo.tutorialzine.com/2017/08/converting-from-speech-to-text-with-javascript/  

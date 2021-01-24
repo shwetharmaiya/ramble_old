@@ -1,0 +1,105 @@
+html {
+	background: #fafafa;
+	font: 14px Georgia, serif;
+}
+
+header, .header {
+	padding: 2px 30px 2px;
+	background: #00b7b2;
+	color: #ff5131;
+	font: 20px Arial, sans-serif;
+	box-shadow: 0 0 9px #ffffff;
+}
+
+header a, .header a {
+	color: #ff5131;
+}
+
+a {
+	text-decoration: underline;
+	color: #424242;
+	}
+	
+a:hover {
+	color: #d50000;
+}
+
+main {
+	padding: 0 60px 0;
+}
+
+article, .post {
+	background: #ffffff;
+	padding: 6px 6px 6px 20px;
+	margin: 18px 0 18px;
+	border-radius: 2px;
+	box-shadow: 0 0 9px #c7c7c7;
+}
+
+article p, .article p {
+	margin: 6px 6px 0px;
+	line-height: 168%;
+}
+
+.post-title {
+	margin-top: 6px;
+	font-size: 24px;
+}
+
+.post-format, .post-text {
+	margin-left: 18px;
+	font-size: 16px;
+	line-height: 1.618;
+}
+
+.post-username {
+	margin-left: 18px;
+    font-size: 12px;
+}
+
+.post-timestamp {
+	margin-left: 18px;
+	margin-right: 18px;
+    font-size: 12px;
+}
+
+.post-tools {
+	text-align: right;
+	margin: 0 -6px -6px -6px;
+	padding: 0 18px;
+	background: #eeeeee;
+	border-radius: 0 0 2px 2px;
+}
+
+.iconbutton {
+    background:white;
+    color:black;
+    padding:0;
+}
+
+button {
+	background: #1b1b1b;
+	color: #fafafa;
+	border-radius: 4px;
+	margin: 12px 0;
+	padding: 6px 12px;
+}
+
+table {
+	color:inherit;
+	width:100%;
+	padding:0;
+}
+
+.iconbutton {
+    background: #fafafa;
+    color: #00b7b2;
+    padding: 6px;
+	margin: 5px 0px 5px 5px;
+    border-radius: 50%;
+}
+
+.imgupload > input
+{
+    display: none;
+}

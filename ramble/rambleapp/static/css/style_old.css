@@ -1,0 +1,54 @@
+.header {
+    padding-left: 30px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    background: #000000;
+    color: white;
+    font-size: 20px;
+    font-family: sans-serif;
+}
+
+.header a { text-decoration: none; color:white; }
+
+.post-title {
+    font-size: 24px;
+    font-family: Georgia;
+}
+.post-text {
+    font-size: 18px;
+    font-family: Georgia;
+    line-height: 1.618;
+}
+
+.post-username {
+    font-size: 14px;
+    font-family: Georgia
+}
+
+.post-timestamp {
+    font-size: 8px;
+    font-family: Georgia
+}
+
+a {text-decoration: underline; color:black; }
+
+.iconbutton {
+    background:white;
+    color:black;
+    padding:0;
+    border-radius:50%;
+}
+
+button {
+background:black;
+color:white;
+border-radius:4px;
+padding:10px;
+}
+
+
+table {
+color:inherit;
+width:100%;
+padding:0;
+}

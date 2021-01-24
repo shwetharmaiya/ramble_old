@@ -1,0 +1,11 @@
+<html>
+<body>
+{% for user in users %}
+<div style='padding:20px'>
+        <img src="{{ user.profile_pic.url }}" width="200px"/>
+        <p>{{ user.full_name }} (@{{ user.username}})</p>
+        <p> {{ user.bio }}</p>
+    </div>
+{% endfor %}
+</body>
+</html>

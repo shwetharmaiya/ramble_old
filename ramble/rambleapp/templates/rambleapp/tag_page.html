@@ -1,0 +1,12 @@
+{% extends './base.html' %}
+{% block content %}
+{% load static %}
+<p> Showing posts tagged "{{ tag }}" </p>
+{% if posts_and_likes %}
+	{% for post, num_likes in posts_and_likes %}
+    	{% include "./display_post.html" %}
+	{% endfor %}
+{% else %}
+<p> 404 tag not found </p>
+{% endif %}
+{% endblock %}

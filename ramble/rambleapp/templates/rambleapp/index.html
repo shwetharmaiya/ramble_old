@@ -1,0 +1,139 @@
+{% extends './base.html' %}
+{% block content %}
+{% load static %}
+<script src='https://cloud.tinymce.com/stable/tinymce.min.js'></script>
+<script>
+    function getStats(id) 
+    {
+        var body = tinymce.get(id).getBody(), text = tinymce.trim(body.innerText || body.textContent);
+
+        return text.length
+    }
+
+    tinymce.PluginManager.add('charactercount', function (editor) 
+    {
+        var self = this;
+
+        function update() 
+        {
+            editor.theme.panel.find('#charactercount').text(['Characters: {0}', self.getCount()]);
+        }
+        editor.on('init', function () 
+        {
+            var statusbar = editor.theme.panel && editor.theme.panel.find('#statusbar')[0];
+            if (statusbar) 
+            {
+                window.setTimeout(function () 
+                {
+                    statusbar.insert({
+                        type: 'label',
+                        name: 'charactercount',
+                        text: ['Characters: {0}', self.getCount()],
+                        classes: 'charactercount',
+                        disabled: editor.settings.readonly
+                    }, 0);
+
+                    editor.on('setcontent beforeaddundo', update);
+
+                    editor.on('keyup', function (e) 
+                    {
+                        update();
+                    });
+                }, 0);
+            }
+        });
+
+        self.getCount = function () 
+        {
+            var tx = editor.getContent({ format: 'raw' });
+            var decoded = decodeHtml(tx);
+            var decodedStripped = decoded.replace(/(<([^>]+)>)/ig, "").trim();
+            var tc = decodedStripped.length;
+            return tc;
+        };
+
+        function decodeHtml(html) 
+        {
+            var txt = document.createElement("textarea");
+            txt.innerHTML = html;
+            return txt.value;
+        }
+    });
+
+    function submit_ramble()
+    {
+        num_chars = getStats('new_ramble_post')
+        if ( num_chars > 10000) {
+            alert("You have exceeded the 10,000 character limit with " + num_chars + " characters")
+            return false
+        } 
+        if (num_chars < 1000) {
+            alert("Only " + num_chars + " characters? Go on, type more. At least a 1000.")
+            return false
+        }
+
+        data = {
+            new_ramble_title: new_ramble_title.value,
+            new_ramble_post: tinyMCE.activeEditor.getContent(),
+            new_ramble_tags: new_ramble_tags.value
+        }
+
+            var ajax = new XMLHttpRequest()
+            ajax.open("POST", "ramblepost")
+            ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+            ajax.onreadystatechange = function(response)
+            {
+                console.log(response, this.status, this.readyState)
+
+                if (this.readyState == 4) {
+                    window.location = "post/" + this.responseText
+                }
+            }
+
+            var formData = new FormData()
+            for(var i in data)
+                formData.append(i, data[i]);
+
+            ajax.send(formData)
+
+    }
+</script>
+
+
+<script>
+    tinymce.init({
+        selector: '#new_ramble_post',
+        plugins: "link charactercount",
+        statusbar: true,
+        init_instance_callback: function (editor) 
+        {
+            $('.mce-tinymce').show('fast');
+            $(editor.getContainer()).find(".mce-path").css("display", "none");
+        }
+    });
+</script>
+
+
+    {% csrf_token %}
+    <div style="text-align:right;padding:0 10%">
+        <input type="text" id="new_ramble_title" name="new_ramble_title" maxlength="100" placeholder="Title"
+        style="width:100%; margin-bottom:10px; font-size:24px;
+        border-width: thin;box-shadow: inset 0 0 1px 1px #888;
+        padding: 5px 10px 5px 10px; "/>
+        <textarea id="new_ramble_post" name="new_ramble_post" maxlength="10000" placeholder="Tell your story..."
+              style="width:100%;height:40vh;margin-bottom:10px"
+        ></textarea>
+        <p style='text-align:left'> Add tags for your post below, separating each tag with a comma. </p>
+        <input type="text" id="new_ramble_tags", name="new_ramble_tags" maxlength="40" placeholder="Uncategorized"
+        style="width:100%">
+        <br>
+        <button onclick="submit_ramble()"> Ramble </button>
+    </div>
+
+
+{% for post, num_likes in posts_and_likes %}
+    {% include "./display_post.html" %}
+{% endfor %}
+
+
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends './user_base.html' %}
+{% block subcontent %}
+	{% for post, num_likes in posts_and_likes %}
+     	{% include "./display_post.html" %}
+	{% endfor %}
+{% endblock subcontent %}  
