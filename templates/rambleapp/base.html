@@ -1,0 +1,266 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/fleuron_transparent_icon.ico' %}"/>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <title>Ramble - Write, Read, Curate</title>
+
+
+    <script>
+    function delete_post(post_id)
+    {
+        if (!confirm("Are you sure you want to delete this post?")){
+            return;
+        }
+
+        var deleted_post_div = document.getElementById("post_"+post_id);
+        deleted_post_div.style.opacity=0.5;
+        deleted_post_div.style.height=deleted_post_div.clientHeight+'px';
+        data = {
+            post_id: post_id,
+        }
+        var ajax = new XMLHttpRequest()
+        ajax.open("POST", "{% url 'delete_a_ramble' %}")
+        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        ajax.onreadystatechange = function(response)
+        {
+            console.log(response, this.status, this.readyState)
+
+            if (this.readyState == 4) {
+                deleted_post_div.style.opacity=0;
+                setTimeout(function(){
+                    deleted_post_div.style.height=0;
+                }, 1000)
+            }
+        }
+
+        var formData = new FormData()
+        for(var i in data)
+            formData.append(i, data[i]);
+
+        ajax.send(formData)
+
+    }
+
+    function like_post(post_id)
+    {
+        var post_div = document.getElementById("post_"+post_id);
+        if (document.getElementById("like_"+post_id).src.endsWith("{% static 'images/liked_button.png' %}"))
+        {
+            console.log("unliking...");
+            document.getElementById("like_"+post_id).src = "{% static 'images/like_button.png' %}";
+        }
+        else
+        {
+            document.getElementById("like_"+post_id).src = "{% static 'images/liked_button.png' %}";
+        }
+
+        data = {
+            post_id: post_id,
+        }
+        var ajax = new XMLHttpRequest()
+        ajax.open("POST", "{% url 'like_a_ramble' %}")
+        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        ajax.onreadystatechange = function(response)
+        {
+            console.log(response, this.status, this.readyState)
+        }
+
+        var formData = new FormData()
+        for(var i in data)
+            formData.append(i, data[i]);
+
+        ajax.send(formData)
+
+    }
+
+
+    function follow_user(user_id)
+    {
+        if (document.getElementById("useradd_"+user_id).src.endsWith("{% static 'images/follows.png' %}"))
+        {
+            console.log("unfollowing...");
+            document.getElementById("useradd_"+user_id).src = "{% static 'images/follow.png' %}";
+        }
+        else
+        {
+            console.log("following...");
+            document.getElementById("useradd_"+user_id).src = "{% static 'images/follows.png' %}";
+        }
+
+        data = {
+            user_id: user_id,
+        }
+        var ajax = new XMLHttpRequest()
+        ajax.open("POST", "{% url 'follow_a_user' %}")
+        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        ajax.onreadystatechange = function(response)
+        {
+            console.log(response, this.status, this.readyState)
+        }
+
+        var formData = new FormData()
+        for(var i in data)
+            formData.append(i, data[i]);
+
+        ajax.send(formData)
+
+    }
+
+    function openModalLikes(post_id)
+    {
+        modalLikes.style.display = "block"
+        modalLikesInner.innerHTML = "Loading..."
+        ajax_get("{% url 'likes_get' 123456 %}".replace('123456', post_id) , false, function(responseText) {
+            modalLikesInner.innerHTML = responseText
+        })
+        return false
+    }
+
+    function keypressed_collect(event) 
+    {
+        console.log(event)
+        if (event.keyCode == 13) {
+            var collection_name = document.getElementById("new_collection");
+             data = {
+                collection_name: collection_name.value,
+                collection_desc: '',
+            }
+            var ajax = new XMLHttpRequest()
+            ajax.open("POST", "{% url 'create_collection' %}")
+            ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+            ajax.onreadystatechange = function(response)
+            {
+                console.log(response, this.status, this.readyState)
+
+                if (this.readyState == 4) {
+                    var json = JSON.parse(this.responseText);
+                    new_button = document.createElement('button')
+                    new_button.setAttribute('id', 'collection_' + json.id)
+                    imgsrc = "{% static 'images/collect.png' %}"
+                    new_button.innerHTML = '<img src="' + imgsrc + '" width="20px"/>' + json.name 
+                    colls = document.getElementById('all_collections')
+                    colls.insertBefore(new_button, colls.firstChild)
+                }
+            }
+            var formData = new FormData()
+            for(var i in data)
+                formData.append(i, data[i]);
+            ajax.send(formData)
+        }
+    }
+
+    function collect_post(post_id)
+    {
+        modalCollect.style.display = "block"
+        modalCollectInner.innerHTML = "Loading..."
+        ajax_get("{% url 'mycollections' 123456 %}".replace('123456', post_id), true, function(responseText) {
+            modalCollectInner.innerHTML = responseText
+        })
+        return false
+    }
+
+    function post_to_collection(collection_id, post_id)
+    {
+        user_comments = prompt("Any nice thing to say about this piece?")
+        data = {
+            collection_id: collection_id, 
+            post_id: post_id, 
+            user_comments: user_comments,
+        }
+        var ajax = new XMLHttpRequest()
+        ajax.open("POST", "{% url 'add_to_collection' %}")
+        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        ajax.onreadystatechange = function(response)
+        {
+            console.log(response, this.status, this.readyState)
+        }
+
+        var formData = new FormData()
+        for(var i in data)
+            formData.append(i, data[i]);
+
+        ajax.send(formData)
+    }
+
+    function ajax_get(url, add_csrf, callback)
+    {
+        var ajax = new XMLHttpRequest()
+        ajax.open("GET", url)
+        if (add_csrf) 
+        {
+            ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        }
+        ajax.onreadystatechange = function(response)
+        {
+            if (this.readyState==4) 
+            {
+                callback(this.responseText)
+            }
+        }
+        ajax.send()
+    }
+
+
+    </script>
+</head>
+<body style="margin:0">
+<div class="header">
+    <table>
+        <tr>
+            <td>
+                <a href="{% url 'index' %}">
+                        <img src="{% static 'images/fleuron_header_reverse_transparent.png' %}" width=300px"
+                             style="margin-right:5px;margin-top:5px;background-color:#fcfcfc"/>
+                        <!--<img src="{% static 'images/logo_transparent.png' %}" width="44" height="44"
+                             style="margin-right:5px;margin-top:5px;"/>
+                        <div style="font-size:55;font-weight:bold;display:inline-block;"> Ramble </div> -->
+                </a>
+                <!--<p style="margin-left:60px"> Read, Write, Curate</p>-->
+            </td>
+            <td style="text-align:right">
+                {% if user.username %}
+                    <div style="text-align:right; font-size:small">
+                        <p>
+                            {% if user_profile.full_name %}
+                                Hello <a href="../u/{{ user.id }}"> {{ user_profile.full_name }}! </a> 
+                            {% else %}
+                                Hello <a href="../u/{{ user.id }}"> {{ user.username }}! </a> <!-- SRM -->
+                            {% endif %}
+                            &nbsp; &nbsp;
+                            <img src="{{ user_profile.profile_pic.url }}" width="20px"/>
+                            <a href="{% url 'logout' %}"><button style="font-size:small">Logout</button></a>
+                         </p>
+                    </div>
+                {% else %}
+                    <a href="{% url 'social:begin' 'twitter' %}">
+                        <Button style="padding:10px;font-size:20px">
+                            <img src="{% static 'images/twitter_white.png' %}" width="18px" height="18px">
+                            &nbsp Login with Twitter
+                        </Button>
+                    </a>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+</div>
+<div style="margin:50px">
+{% block content %}
+{% endblock %}
+</div>
+<div id=modalLikes onclick="if (event.target==this) {this.style.display='none'}" style="display:none;position:fixed;top:0;height:100vh;left:0;width:100vw;
+background:rgba(100,100,100,0.5);">
+    <div id=modalLikesInner style="position:fixed;top:30vh;height:40vh;left:30vw;width:40vw;
+background:white;box-shadow:1px 1px 10px #888; border-radius:8px;overflow-y:scroll">
+    </div>
+</div>
+<div id=modalCollect onclick="if (event.target==this) {this.style.display='none'}" style="display:none;position:fixed;top:0;height:100vh;left:0;width:100vw;
+background:rgba(100,100,100,0.5);">
+    <div id=modalCollectInner style="position:fixed;top:30vh;height:40vh;left:30vw;width:40vw;
+background:white;box-shadow:1px 1px 10px #888; border-radius:8px;overflow-y:scroll">
+    </div>
+</div>
+</body>
+</html>
