@@ -225,7 +225,7 @@
                     <div style="text-align:right; font-size:small">
                         <p>
                             {% if user_profile.full_name %}
-                                Hello <a href="../u/{{ user.id }}"> {{ user_profile.full_name }}! </a> 
+                                Hello<a href="../u/{{ user.id }}"> {{ user_profile.full_name }}! </a> 
                             {% else %}
                                 Hello <a href="../u/{{ user.id }}"> {{ user.username }}! </a> <!-- SRM -->
                             {% endif %}
