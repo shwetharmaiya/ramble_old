@@ -102,8 +102,9 @@ def get_user_profile(request, user_id):
     if profile_user:
         user_posts = Post.objects.filter(user_id=profile_user).order_by('-post_timestamp')
         user_posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in user_posts]
-        profile_user_profile = Profile.objects.get(user_id=request.user.id)
-
+        #profile_user_profile = Profile.objects.get(user_id=request.user.id)
+        profile_user_profile = Profile.objects.get(user_id=user_id) #SRM
+        
         profile_context = {'profile_user': profile_user, 'posts': user_posts,
                    'posts_and_likes': user_posts_and_likes,
                    'profile_user_profile': profile_user_profile,
