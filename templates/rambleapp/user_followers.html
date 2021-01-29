@@ -1,0 +1,11 @@
+{% extends './user_base.html' %}
+{% block subcontent %}
+	{% for user in followers_profiles %}
+     <div align="center">
+        <img src="{{ user.profile_pic.url }}" width="200px"/>
+        <!-- <p>{{ user.full_name }} (@{{ user.username}})</p> -->
+        <p>{{ user.full_name }} (@{{ user.user_id}})</p> <!-- SRM -->
+        <p> {{ user.bio }}</p>
+    </div>
+	{% endfor %}
+{% endblock subcontent %}  
