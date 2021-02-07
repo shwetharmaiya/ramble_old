@@ -226,7 +226,6 @@ def get_user_profile_collections(request, user_id):
 
 def get_ramblepost(request, post_id):
     try:
-	print("In ramble post")
         post = Post.objects.get(pk=post_id)
         post_likes = len(Like.objects.filter(post_id=post))
         comments = Comment.objects.filter(post_id=post, depth=0)
