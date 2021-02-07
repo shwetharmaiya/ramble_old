@@ -226,6 +226,7 @@ def get_user_profile_collections(request, user_id):
 
 def get_ramblepost(request, post_id):
     try:
+	print("In ramble post")
         post = Post.objects.get(pk=post_id)
         post_likes = len(Like.objects.filter(post_id=post))
         comments = Comment.objects.filter(post_id=post, depth=0)
@@ -403,7 +404,8 @@ def post_comment(request):
         new_comment = Comment(user_id=user, post_id=post, comment_text=comment_text, 
                                 parent_id=parent_comment, depth=depth)
         new_comment.save()
-        return HttpResponse(status=204)
+        #return HttpResponse(status=204)
+        return HttpResponse(status=200) #SRM
     return HttpResponseForbidden('allowed only via POST')
 
 
