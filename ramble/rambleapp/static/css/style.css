@@ -3,6 +3,9 @@ html {
 	font: 14px Georgia, serif;
 }
 
+.container { 
+
+}
 header, .header {
 	padding: 2px 30px 2px;
 	background: #00b7b2;
@@ -10,6 +13,14 @@ header, .header {
 	font: 20px Arial, sans-serif;
 	box-shadow: 0 0 9px #ffffff;
 }
+
+
+@media screen and (max-width: 300px) {
+	.headerimg{
+			width : 150px;
+	}
+}
+
 
 header a, .header a {
 	color: #ff5131;
