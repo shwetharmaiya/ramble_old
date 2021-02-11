@@ -213,7 +213,7 @@
     </script>
     </head>
 <body style="margin:0">
-<div class="container">
+
 <div class="header">
     <div> 
         <a href="{% url 'index' %}">
@@ -221,7 +221,7 @@
                  style="margin-right:5px;margin-top:5px;background-color:#fcfcfc"/>
     </a>
     </div>
-    <div>
+    <div style="float: right ;">
         {% if user.username %}
         <div style="text-align:right; font-size:small">
             <p>
@@ -236,11 +236,9 @@
              </p>
         </div>
     {% else %}
-        <a href="{% url 'social:begin' 'twitter' %}">
-            <Button style="padding:10px;font-size:20px">
-                <img src="{% static 'images/twitter_white.png' %}" width="18px" height="18px">
-                &nbsp Login with Twitter
-            </Button>
+
+    <a id="twitter-button" class="btn btn-primary btn-block btn-social btn-twitter" style="color:white;" href="{% url 'social:begin' 'twitter' %}">
+        <i class="fa fa-twitter"></i> Sign in with Twitter
         </a>
     {% endif %}
 
