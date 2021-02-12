@@ -11,6 +11,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> <!-- SRM -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Ramble - Write, Read, Curate</title>
 
 
@@ -220,8 +221,13 @@
             <img class="headerimg" src="{% static 'images/fleuron_header_reverse_transparent.png' %}" width=300px"
                  style="margin-right:5px;margin-top:5px;background-color:#fcfcfc"/>
     </a>
-    </div>
-    <div style="float: right ;">
+    <div style="float: right ;padding-right: 20px; margin-top: 20px;">
+        <a href="{% url 'contact_us' %}" style="color: black;"><i class="fa fa-envelope" style="color: black;"></i> Contact</a> 
+    </div>       
+      
+</div>
+   
+    <div style="float: right;">
         {% if user.username %}
         <div style="text-align:right; font-size:small">
             <p>

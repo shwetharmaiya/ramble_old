@@ -20,6 +20,10 @@ def landing_page(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
+def contact_us(request):
+    template = loader.get_template('rambleapp/contact_us.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
 
 def post_email(request):
     if request.POST:

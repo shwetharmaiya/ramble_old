@@ -40,6 +40,7 @@ urlpatterns = [
   path('login', views.login, name='login'),
   path('logout', views.logout, name='logout'),
   path('', views.landing_page, name='landing_page'),
+  path('contact', views.contact_us, name="contact_us"),
   path('subscribe_email', views.post_email, name='subscribe_email'),
   # path('accounts/login/', views.login, name='sociallogin'),
   url(r'^oauth/', include('social_django.urls', namespace='social')),
