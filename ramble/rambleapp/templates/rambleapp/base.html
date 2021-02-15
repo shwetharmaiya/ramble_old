@@ -11,6 +11,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> <!-- SRM -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Ramble - Write, Read, Curate</title>
 
@@ -243,10 +245,15 @@
         </div>
     {% else %}
 
+    <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with Google</a>
+    
     <a id="twitter-button" class="btn btn-primary btn-block btn-social btn-twitter" style="color:white;" href="{% url 'social:begin' 'twitter' %}">
         <i class="fa fa-twitter"></i> Sign in with Twitter
         </a>
     {% endif %}
+    
+    
+
 
     </div>
     <!-- <table>

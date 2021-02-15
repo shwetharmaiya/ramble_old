@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -58,7 +59,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'ramble.urls'
 
-SECURE_SSL_REDIRECT = True
+#SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+SECURE_SSL_REDIRECT = False
 
 TEMPLATES = [
     {
@@ -77,6 +81,7 @@ TEMPLATES = [
         },
     },
 ]
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 WSGI_APPLICATION = 'ramble.wsgi.application'
 
@@ -114,12 +119,18 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.github.GithubOAuth2',
     'social_core.backends.twitter.TwitterOAuth',
     'social_core.backends.facebook.FacebookOAuth2',
-
+    'social_core.backends.open_id.OpenIdAuth',
+    'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.google.GoogleOAuth',
+   
     'django.contrib.auth.backends.ModelBackend',
 )
 
 SOCIAL_AUTH_TWITTER_KEY = '07ezQH4rAy9jtQsFNpITLlZUD'
 SOCIAL_AUTH_TWITTER_SECRET = 'AyzkT2Osys7znbFVfNnarpUVvLDH2DAwNgYJu0xVOi7WLxK5hi'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '604464067662-r4m63m638o2ff91i7cj64ufidqm9q5kp.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'q6tukpzUv3Vzz27iSBylJyQs'
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
