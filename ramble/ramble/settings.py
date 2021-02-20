@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from .config import * #SRM
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -125,12 +126,6 @@ AUTHENTICATION_BACKENDS = (
    
     'django.contrib.auth.backends.ModelBackend',
 )
-
-SOCIAL_AUTH_TWITTER_KEY = '07ezQH4rAy9jtQsFNpITLlZUD'
-SOCIAL_AUTH_TWITTER_SECRET = 'AyzkT2Osys7znbFVfNnarpUVvLDH2DAwNgYJu0xVOi7WLxK5hi'
-
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '604464067662-r4m63m638o2ff91i7cj64ufidqm9q5kp.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'q6tukpzUv3Vzz27iSBylJyQs'
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
