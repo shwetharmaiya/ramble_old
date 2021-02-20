@@ -3,3 +3,4 @@
 rambleapp/migrations/*
 ../ramblevenv/*
 userdata/*
+ramble/config.py

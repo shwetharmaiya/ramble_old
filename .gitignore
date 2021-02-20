@@ -1,3 +1,4 @@
 ramble/.idea/*
 ramble/db.sqlite3
 ramblevenv/*
+ramble/ramble/config.py
