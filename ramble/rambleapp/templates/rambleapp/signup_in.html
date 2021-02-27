@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- SRM -->
+    
+    <link rel="stylesheet" href="{% static 'css/signup_in_styles.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> <!-- SRM -->
+    
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/fleuron_transparent_icon.ico' %}"/>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> <!-- SRM -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+     // Imports
+@import url('http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css');
+
+// Variables
+@colorBase: rgba(68, 138, 175, 1);
+
+.universal-inline-block {
+	display: inline-block;
+	zoom: 1;
+	*display: inline;
+}
+
+// Styles
+.social-icons {
+  text-align: center;
+
+  color: @colorBase;
+  
+  ul {
+	  list-style-type: none;
+    margin: 0;
+    padding: 0;
+    
+    li {
+      .universal-inline-block;
+			vertical-align:  middle;
+			a {
+				&:hover {
+					i {
+						color: darken(@colorBase, 20%);
+					}
+				}
+				&:focus, &:active {
+					i {
+						transition: none;
+						color: darken(@colorBase, 40%);
+					}
+				}
+			}
+		}
+	}
+}
+
+
+    </style>
+ <script>
+      $(document).ready(function() {
+        $("#signup__link").click(function() {
+            $(".signup-page-container").removeClass("signup-form-open");
+            $(".signup-page-container").addClass("login-form-open");
+        });
+        $("#login__link").click(function() {
+            $(".signup-page-container").addClass("signup-form-open");
+            $(".signup-page-container").removeClass("login-form-open");
+        });
+    });
+    </script>
+  </head>        
+<body>   
+  <div class="signup-page-container signup-form-open">
+    <div class="signup__container signup-form">
+        <div class="container__child signup__thumbnail" style="background: url( {% static 'images/pexels-lisa-fotios-851213.jpg' %} );">
+            <div class="thumbnail__logo"><img src="{% static 'images/logo.png' %}" alt="" /></div>
+            <div class="thumbnail__content text-center">
+                <h1 class="heading--primary">Welcome to signup</h1>
+                <h2 class="heading--secondary">Are you ready to join?</h2>
+            </div>
+            <div class="signup__overlay"></div>
+        </div>
+        <div class="container__child signup__form">
+            <form action="{% url 'post_signup' %}" method="POST">
+              {% csrf_token %} 
+              <div class="form-group">
+                  <label for="username">Username</label><br/><br/>
+                  <input class="form-control" id="username" type="text" name="username" placeholder="" required="" />
+                </div>
+                
+                <div class="form-group">
+                  <label for="email">Email</label><br/><br/>
+                  <input class="form-control" id="email" type="email" name="email" placeholder="" required="" />
+                </div>
+                <div class="form-group">
+                  <label for="psw">Password</label><br/><br/>
+                  <input class="form-control" id="password" type="password" name="psw" placeholder="" required="" />
+                </div>
+                <div class="form-group">
+                  <label for="psw-repeat">Repeat Password</label><br/><br/>
+                  <input class="form-control" id="passwordRepeat" type="password" name="psw-repeat" placeholder="" required="" />
+                </div>
+                <div class="m-t-lg">
+                    <ul class="list-inline">
+                        <li><input class="btn btn--form" type="submit" value="Register" /></li>
+                        <li><a class="signup__link" id="signup__link" href="#">I am already a member</a></li>
+                    </ul>
+                </div>
+                </form>
+                
+                <div class="container">
+                  <div class="row">
+                   <div class="span10 offset1">   
+                    <div class="social-icons">
+                        <ul>
+                          <li><a id="twitter-button" class="btn btn-primary btn-block btn-social btn-twitter" style="color:white;" href="{% url 'social:begin' 'twitter' %}"><i class="fa fa-twitter"></i>Login with Twitter</a>
+                          </li>
+                          <li><a class="btn btn-primary btn-block btn-social btn-google" href="{% url 'social:begin' 'google-oauth2' %}"><i class="fa fa-google" aria-hidden="true"></i>Login with Google</a>
+                          </li>
+                        </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>        
+        </div>
+        
+    </div>
+    <div class="login-container">
+        <div class="signup__container">
+            <div class="container__child signup__form">
+                <form action="#">
+                    <div class="form-group">
+                      <label for="email">Email</label><br/><br/>
+                      <input class="form-control" id="email" type="email" name="email" placeholder="" required="" />
+                    </div>
+                    <br/><br/>
+                    <div class="form-group">
+                      <label for="password">Password</label><br/><br/>
+                      <input class="form-control" id="password" type="password" name="password" placeholder="" required="" />
+                    </div>
+                    <br/><br/>
+                    <div class="m-t-lg">
+                        <ul class="list-inline">
+                            <li><input class="btn btn--form" type="submit" value="Login" /></li>
+                            <li><a class="signup__link" id="login__link" href="#">Create a new member</a></li>
+                        </ul>
+                    </div>
+                </form>
+                <div class="container">
+                  <div class="row">
+                   <div class="span10 offset1">   
+                    <div class="social-icons">
+                        <ul>
+                          <li><a id="twitter-button" class="btn btn-primary btn-block btn-social btn-twitter" style="color:white;" href="{% url 'social:begin' 'twitter' %}"><i class="fa fa-twitter"></i>Login with Twitter</a>
+                          </li>
+                          <li><a class="btn btn-primary btn-block btn-social btn-google" href="{% url 'social:begin' 'google-oauth2' %}"><i class="fa fa-google" aria-hidden="true"></i>Login with Google</a>
+                          </li>
+                        </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                
+              </div>
+            <div class="container__child signup__thumbnail" style="background: url({% static 'images/pexels-lisa-fotios-851213.jpg' %});">
+                <div class="thumbnail__logo"><img src="{% static 'images/logo.png' %}" alt="" /></div>
+                <div class="thumbnail__content text-center">
+                    <h1 class="heading--primary">Welcome to login</h1>
+                    <h2 class="heading--secondary">Are you ready to login?</h2>
+                </div>
+                <div class="signup__overlay"></div>
+            </div>
+        </div>
+    </div>
+</div> 
+</body>
+</html>

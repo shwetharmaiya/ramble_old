@@ -1,16 +1,16 @@
 {% extends './base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
 {% load static %}
 
-    {% csrf_token %}
-<div style="text-align:center">
-    <div style="width:50%;background-color:white;margin:auto;padding:50px">
-        <p style="font-size:25px"> Let's fill out your profile</p>
-        <form method="POST" class="post-form" action="{% url 'post_profile' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Ready To Ramble</button>
-        </form>
+    <div style="text-align:center">
+        <div style="width:50%;background-color:white;margin:auto;padding:50px">
+            <p style="font-size:25px"> Let's fill out your profile</p>
+            <form method="POST" class="post-form" action="{% url 'edit_your_profile' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Ready To Ramble</button>
+            </form>
         <!--
         <div class="imgupload" align="center">
             <label for="file-input">

@@ -233,7 +233,7 @@
         {% if user.username %}
         <div style="text-align:right; font-size:small">
             <p>
- {% if user_profile.full_name %}
+        {% if user_profile.full_name %}
                     Hello <a href="../u/{{ user.id }}"> {{ user_profile.full_name }}! </a>
                 {% else %}
                     Hello <a href="../u/{{ user.id }}"> {{ user.username }}! </a> 
@@ -245,16 +245,11 @@
         </div>
     {% else %}
 
-    <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with Google</a>
+  
+       <a href="{% url 'signup_in' %}"><button id="signupbtn" >Sign Up/In</button></a>
+    {% endif    %}
     
-    <a id="twitter-button" class="btn btn-primary btn-block btn-social btn-twitter" style="color:white;" href="{% url 'social:begin' 'twitter' %}">
-        <i class="fa fa-twitter"></i> Sign in with Twitter
-        </a>
-    {% endif %}
-    
-    
-
-
+         
     </div>
     <!-- <table>
         <tr>

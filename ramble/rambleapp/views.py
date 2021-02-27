@@ -1,12 +1,18 @@
 import json 
+import datetime
 from django.shortcuts import redirect
 
 # Create your views here.
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.template import loader
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User as Auth_User
+from django.contrib.auth.forms import UserChangeForm
+from django.db import IntegrityError
+from django.shortcuts import render
 
 from social_django.models import UserSocialAuth
 
@@ -25,6 +31,42 @@ def contact_us(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
+def signup_in(request):
+    if request.method=='GET':
+        template = loader.get_template('rambleapp/signup_in.html')
+        context = {}
+        return HttpResponse(template.render(context, request))
+    
+def post_signup(request):
+    if request.method=='POST': 
+        username = request.POST["username"]
+        email = request.POST["email"]
+        password = request.POST["psw"]
+        confirmation = request.POST["psw-repeat"]
+        if password != confirmation:
+            return render(request, "rambleapp/signup_in.html", {
+                "message": "Passwords must match."
+            })
+
+        try:
+            user = Auth_User.objects.create_user(username, email, password)
+            user.save()
+        except IntegrityError as e:
+            print(e)
+            return render(request, "rambleapp/signup_in.html", {
+                "message": "Email address already taken."
+            })
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            auth_login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+        #user = Auth_User.objects.get(username=username).pk
+        #form = ProfileForm(request.POST, request.FILES)
+        #template = loader.get_template('rambleapp/make_profile.html')
+        #context = {}
+        #return HttpResponse(template.render(context, request))
+        return redirect(make_profile)
+    return HttpResponseForbidden('allowed only via POST')
+    
 def post_email(request):
     if request.POST:
         email = request.POST['email']
@@ -54,7 +96,6 @@ def index(request):
     user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
     user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
     collection_posts = [post.post_id.pk for post in CollectionPost.objects.filter(collection_id__user_id=user)]
-
     context = {'posts': posts, 'user_liked_posts': user_liked_posts,
                'user_followers': user_followers, 'user_profile': user_profile,
                'posts_and_likes': posts_and_likes, 'user_collected_posts': collection_posts}
@@ -63,14 +104,44 @@ def index(request):
 
 @login_required
 def make_profile(request):
+   # try:
+   #    profile = Profile.objects.get(user_id=request.user.id)  
+   #     if request.method== "POST":
+   #         form = ProfileForm(request.POST, request.FILES)
+   #         print("ABCS 1")
+   #         if form.is_valid():
+   #             form.save()
+   #             print("ABCS 2")
+   #             return redirect(index)
+   #     else:
+   #         print("ABCS 3")
+   #         form = EditProfileForm(request.POST, request.FILES)
+   #         context = { 'form' : form }
+   #         return render(request, "rambleapp/make_profile.html", context)
+   # except Profile.DoesNotExist:
+   #     print("ABCS 4")
+   #    form = ProfileForm(request.POST, request.FILES)
+   #    template = loader.get_template('rambleapp/make_profile.html')
+   #     context = {'form': form}
+   #     return HttpResponse(template.render(context, request))
+
     try:
         profile = Profile.objects.get(user_id=request.user.id)
-        return redirect(index)
     except Profile.DoesNotExist:
-        form = ProfileForm(request.POST, request.FILES)
-        template = loader.get_template('rambleapp/make_profile.html')
-        context = {'form': form}
-        return HttpResponse(template.render(context, request))
+        profile = Profile()
+        
+    if request.method == 'POST':
+        user = Auth_User.objects.get(pk=request.user.id)
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():  
+            new_profile = form.save(commit=False)
+            new_profile.user_id = user
+            new_profile.save()
+            return redirect(index)
+    else:
+        form = ProfileForm(instance=profile)
+        context = { 'form' : form }
+        return render(request, "rambleapp/make_profile.html", context) 
 
 # user profile helper methods: 
 
@@ -320,7 +391,7 @@ def login(request):
 
     posts = Post.objects.all().order_by('-post_timestamp')
     posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in posts]
-
+   
     context = {'twitter_login': twitter_login, 'posts': posts, 'posts_and_likes': posts_and_likes}
     return HttpResponse(template.render(context, request))
 
@@ -349,7 +420,7 @@ def post_ramble(request):
         post_tags = 'uncategorized, other random stuff'
     user = Auth_User.objects.get(pk=request.user.id)
 
-    new_post = Post(user_id=user, post_text=post_text, post_title=post_title)
+    new_post = Post(user_id=user, post_text=post_text, post_title=post_title, status=1)
     new_post.save()
     # This is a many to many model, so you need to save it first, 
     # so it has a primary key
@@ -364,23 +435,61 @@ def post_ramble(request):
     # return HttpResponse(status=204)
     return HttpResponse(pk)
 
+@login_required
+def save_draft(request): 
+    if request.method == 'POST':
+        new_ramble_title = request.POST.get('new_ramble_title')
+        new_ramble_post = request.POST.get('new_ramble_post')
+        new_ramble_tags = request.POST.get('new_ramble_tags')
+
+        #message = request.POST["success"]
+    
+        try:
+            now=datetime.datetime.now()
+            print( " I am here")
+            user = Auth_User.objects.get(pk=request.user.id)
+            draft = Post(user_id=user, post_text=new_ramble_post, post_title=new_ramble_title, post_timestamp= now, status=0)
+            #draft = Post.objects.create(post_title=new_ramble_title, post_text=new_ramble_post, tags=new_ramble_tags, post_timestamp= now)
+            draft.save()   
+            tagslist = [str(r).strip() for r in new_ramble_tags.split(',')]
+
+            draft.tags.add(*tagslist)
+            draft.save()
+
+            return HttpResponse(draft.pk)
+        except:
+            pass
+    #return HttpResponse(json.dumps('status': 1), content_type="application/json")
+    responseData = {
+        'status': 1
+    }
+    return JsonResponse(responseData)
 
 @login_required
-def post_profile(request):
-    if request.method == 'POST':
-        user = Auth_User.objects.get(pk=request.user.id)
-        form = ProfileForm(request.POST, request.FILES)
-        if form.is_valid():
-            new_profile = form.save(commit=False)
-            new_profile.user_id = user
-            # bio = form.cleaned_data['bio']
-            # fullname = form.cleaned_data['fullname']
-            # new_profile = Profile(user_id=user, profile_pic=pic, bio=bio, full_name=fullname)
-            new_profile.save()
-            return redirect('index')
-        else:
-            return HttpResponse("FUCK, form is invalid" + str(form.errors))
-    return HttpResponseForbidden('allowed only via POST')
+def load_draft(request):
+    try:
+        draft = Post.objects.filter(user_id=request.user.id, status=0)
+        print("Draft loading")
+        return HttpResponse(draft)
+    except Post.DoesNotExist:
+        return HttpResponse('')
+
+@login_required
+#def post_profile(request):
+#    if request.method == 'POST':
+#        user = Auth_User.objects.get(pk=request.user.id)
+#        form = ProfileForm(request.POST, request.FILES)
+#       if form.is_valid():
+#            new_profile = form.save(commit=False)
+#            new_profile.user_id = user
+#            # bio = form.cleaned_data['bio']
+#            # fullname = form.cleaned_data['fullname']
+#            # new_profile = Profile(user_id=user, profile_pic=pic, bio=bio, full_name=fullname)
+#            new_profile.save()
+#            return redirect('index')
+#        else:
+#            return HttpResponse("FUCK, form is invalid" + str(form.errors))
+#    return HttpResponseForbidden('allowed only via POST')
 
 
 @login_required

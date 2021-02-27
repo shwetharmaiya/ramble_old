@@ -1,0 +1,210 @@
+$white: #fff;
+$btn-bg: #DF6482;
+$pattern: rgba(85, 85, 85, 0.33);
+$overlay-bg: rgba(0, 0, 0, 0.59);
+$a-focus:rgba(255, 255, 255, 0.5);
+$form-bg: #fafafa;
+$text-color: #555;
+$link-color: #999;
+$link-hover-color:#787878;
+$box-shadow-color:rgba(0, 0, 0, 0.25);
+$pattern-img-url: url('../images/person_wordcloud1.png');
+body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Josefin Sans', sans-serif;
+}
+.signup-page-container {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+      display: flex;
+    align-items: center;
+    background: linear-gradient($pattern, $pattern), $pattern-img-url repeat;
+    .signup__container {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        left: 0;
+        margin-right: auto;
+        margin-left: auto;
+        transform: translateY(-50%);
+        overflow: hidden;
+        display: table;
+        align-items: center;
+        justify-content: center;
+        width: 50rem;
+        height: 30rem;
+        border-radius: 0.1875rem;
+        box-shadow: 0px 0.1875rem 0.4375rem $box-shadow-color;
+        &.signup-form {
+            z-index: 10;
+        }
+        .signup__overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: $overlay-bg;
+        }
+        .container__child {
+            width: 50%;
+            height: 493px;
+            color: $white;
+            display: table-cell;
+            vertical-align: middle;
+            transition: all ease .8s;
+        }
+        .signup__thumbnail {
+            position: relative;
+            padding: 2rem;
+            display: table-cell;
+            flex-wrap: wrap;
+            align-items: center;
+            background-repeat: no-repeat !important;
+            background-position: center center !important;
+            background-size: cover !important;
+            vertical-align: middle;
+            top: 0;
+            transition: all ease .8s;
+        }
+        &:hover {
+            .signup__thumbnail {
+                transition: all ease .8s;
+            }
+        }
+        .thumbnail__logo {
+            align-self: flex-start;
+            position: absolute !important;
+            top: 15px;
+        }
+        .thumbnail__content {
+            align-self: center;
+        }
+        .heading--primary {
+            font-size: 1.999rem;
+        }
+        .heading--secondary {
+            font-size: 1.414rem;
+        }
+        .thumbnail__links {
+            align-self: flex-end;
+            width: 100%;
+        }
+        .thumbnail__links a {
+            font-size: 1rem;
+            color: $white;
+            &:hover,
+            &:focus {
+                color: $a-focus;
+            }
+        }
+        .thumbnail__logo,
+        .thumbnail__content,
+        .thumbnail__links {
+            position: relative;
+            z-index: 2;
+        }
+        .signup__form {
+            padding: 2.5rem;
+            background: $form-bg;
+            position: relative;
+            top: 0;
+            transition: all ease .8s;
+        }
+        label {
+            font-size: .85rem;
+            text-transform: uppercase;
+            color: $text-color;
+            margin-bottom: 0;
+        }
+        .form-control {
+            background-color: transparent;
+            border-top: 0;
+            border-right: 0;
+            border-left: 0;
+            border-radius: 0;
+            padding-left: 0;
+            &:active,
+            &:focus,
+            &:invalid{
+                outline: none !important;
+                box-shadow: none !important;
+                border-color: $btn-bg;
+            }
+        }
+        .btn--form {
+            padding: .5rem 2.5rem;
+            font-size: .95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: $white;
+            background: $btn-bg;
+            border-radius: 2.1875rem;
+            transition: all ease .5s;
+            margin-bottom: 10px;
+            margin-top: 15px;
+            font-family: sans-serif;
+            &:focus,
+            &:hover {
+                background: transparent;
+                transition: all ease .5s;
+                border-color: $btn-bg;
+                color: $btn-bg;
+                outline: none;
+                box-shadow: none;
+            }
+        }
+        .signup__link {
+            font-size: .8rem;
+            font-weight: 600;
+            text-decoration: underline;
+            color: $link-color;
+            &:focus,
+            &:hover {
+                color: $link-hover-color;
+            }
+        }
+    }
+}
+
+.login-container {
+    .signup__container {
+        z-index: 9;
+        .container__child.signup__thumbnail {
+            top: 493px;
+        }
+        .container__child.signup__form {
+            top: -493px;
+        }
+    }
+}
+
+.login-form-open {
+    .signup-form {
+        .signup__thumbnail {
+            top: 493px;
+            transition: all ease .8s;
+        }
+        .signup__form {
+            top: -493px;
+            transition: all ease .8s;
+        }
+    }
+    .login-container {
+        .signup__container {
+            z-index: 11;
+            .container__child.signup__thumbnail {
+                top: 0;
+                z-index: 10;
+            }
+            .container__child.signup__form {
+                top: 0;
+                z-index: 10;
+            }
+        }
+    }
+}

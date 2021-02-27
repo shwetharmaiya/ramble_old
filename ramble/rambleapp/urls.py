@@ -20,6 +20,8 @@ urlpatterns = [
   path('post/<int:post_id>', views.get_ramblepost, name='post'),
 
   path('ramblepost', views.post_ramble, name='post_a_ramble'),
+  path('save_draft', views.save_draft, name='save_draft'),
+  path('load_draft', views.load_draft, name='load_draft'),
   path('deletepost', views.delete_post, name='delete_a_ramble'),
   path('likepost', views.like_post, name='like_a_ramble'),
 
@@ -35,12 +37,14 @@ urlpatterns = [
   path('tag/<str:tag_page>', views.get_tagpage, name='tag_page'),
 
   path('make_profile', views.make_profile, name='edit_your_profile'),
-  path('post_profile', views.post_profile, name='post_profile'),
+#  path('post_profile', views.post_profile, name='post_profile'),
 
   path('login', views.login, name='login'),
   path('logout', views.logout, name='logout'),
   path('', views.landing_page, name='landing_page'),
   path('contact', views.contact_us, name="contact_us"),
+  path('signup_in', views.signup_in, name="signup_in"),
+  path('post_signup', views.post_signup, name="post_signup"),
   path('subscribe_email', views.post_email, name='subscribe_email'),
   # path('accounts/login/', views.login, name='sociallogin'),
   url(r'^oauth/', include('social_django.urls', namespace='social')),
