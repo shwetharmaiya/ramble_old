@@ -552,8 +552,13 @@ def post_comment(request):
 @login_required
 def delete_post(request):
     user = Auth_User.objects.get(pk=request.user.id)
-    post_id = request.POST['post_id']
-    post = Post.objects.get(pk=post_id)
+    post_id = request.POST.get('post_id', False)
+    draft_id = request.POST.get('draft_id', False)
+    if post_id is not False:
+        post = Post.objects.get(pk=post_id, status = 1 )
+    elif draft_id is not False:
+        post = Post.objects.get(pk=draft_id , status = 0 )
+
     if not post:
         return HttpResponse(status=400)
     if post.user_id == user:

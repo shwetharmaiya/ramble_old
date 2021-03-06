@@ -40,7 +40,7 @@
     <a href="/draft/{{ draft.pk }}" id="more_link_{{draft.pk}}"
     style="display:none">More...</a>
     {% if draft.user_id.id == user.id %}
-        <button onclick="delete_post({{ draft.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
+        <button onclick="delete_draft({{ draft.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
             <img src="{% static 'images/delete2.png' %}" width="12px" height="12px">
         </button>
     {% endif %}
