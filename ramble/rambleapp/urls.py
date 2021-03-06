@@ -25,6 +25,7 @@ urlpatterns = [
   path('load_draft', views.load_draft, name='load_draft'),
   path('deletepost', views.delete_post, name='delete_a_ramble'),
   path('likepost', views.like_post, name='like_a_ramble'),
+  path('convertpost', views.convert_post, name='convert_a_ramble'),
 
   path('followuser', views.follow_user, name='follow_a_user'),
 

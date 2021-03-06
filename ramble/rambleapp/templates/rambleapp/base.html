@@ -86,6 +86,34 @@
         ajax.send(formData)
 
     }
+    function convert_post(post_id)
+    {
+     
+        var convert_post_div = document.getElementById("post_"+post_id);
+        
+        data = {
+            post_id: post_id,
+        }
+        var ajax = new XMLHttpRequest()
+        ajax.open("POST", "{% url 'convert_a_ramble' %}")
+        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        ajax.onreadystatechange = function(response)
+        {
+            console.log(response, this.status, this.readyState)
+
+            if (this.readyState == 4) {
+                console.log("Converted post to draft")
+                setInterval('location.reload()', 5000);
+            }
+        }
+
+        var formData = new FormData()
+        for(var i in data)
+            formData.append(i, data[i]);
+
+        ajax.send(formData)
+
+    }
 
     function like_post(post_id)
     {

@@ -568,6 +568,16 @@ def delete_post(request):
         return HttpResponse(status=400)
 
 @login_required
+def convert_post(request):
+    user = Auth_User.objects.get(pk=request.user.id)
+    post_id = request.POST['post_id']
+    post = Post.objects.get(pk=post_id, status = 1 )
+    post.status = 0
+    post.save() 
+    
+    return HttpResponse(status=204)
+
+@login_required
 def delete_comment(request):
     user = Auth_User.objects.get(pk=request.user.id)
     comment_id = request.POST['comment_id']

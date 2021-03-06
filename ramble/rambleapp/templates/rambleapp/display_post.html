@@ -58,6 +58,14 @@
             <img src="{% static 'images/delete2.png' %}" width="12px" height="12px">
         </button>
     {% endif %}
+
+    {% if post.user_id.id == user.id %}
+    <h6> Convert post to draft </h6>
+    <button onclick="convert_post({{ post.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
+        <img src="{% static 'images/convertpost.png' %}" width="12px" height="12px">
+    </button>
+    {% endif %}
+
 </div>
 
 <script>
