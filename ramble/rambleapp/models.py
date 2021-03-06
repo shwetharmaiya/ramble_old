@@ -22,17 +22,19 @@ class Profile(models.Model):
     profile_pic = models.ImageField(upload_to='profilepix/')
     bio = models.CharField(max_length=150)
 
-STATUS = (
-    (0,"Draft"),
-    (1,"Publish")
-)
 class Post(models.Model):
+    class Status(models.IntegerChoices):
+        Draft = 0
+        Publish = 1
+
     user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
     post_timestamp = models.DateTimeField(default=datetime.now)
     post_title = models.CharField(max_length=100)
     post_text = models.CharField(max_length=10000)
     tags = TaggableManager()
-    status = models.IntegerField(choices=STATUS, default=0)
+    #status = models.IntegerField(choices=STATUS, default=0)
+              
+    status = models.IntegerField(choices=Status.choices, default=0)
 
 class Collection(models.Model):
     user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)

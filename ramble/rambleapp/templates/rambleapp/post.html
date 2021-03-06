@@ -3,6 +3,8 @@
 {% load static %}
 {% if post %}
     {% include "./display_post.html" %}
+{% elif draft %}
+    {% include "./display_draft.html" %}
 {% else %}
     <p> 404 Post not found </p>
 {% endif %}

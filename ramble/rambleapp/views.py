@@ -90,15 +90,19 @@ def index(request):
     template = loader.get_template('rambleapp/index.html')
 
     # get all previous posts
-    posts = Post.objects.all().order_by('-post_timestamp')
-    posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in posts]
+    #posts = Post.objects.all().order_by('-post_timestamp')
+    posts = Post.objects.filter(status=1).order_by('-post_timestamp')
+    drafts = Post.objects.filter(status=0).order_by('-post_timestamp')
 
+    posts_and_likes = [(post, len(Like.objects.filter(post_id=post) )) for post in posts]
+    drafts_and_likes = [(draft, len(Like.objects.filter(post_id=draft))) for draft in drafts]
+   
     user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
     user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
     collection_posts = [post.post_id.pk for post in CollectionPost.objects.filter(collection_id__user_id=user)]
     context = {'posts': posts, 'user_liked_posts': user_liked_posts,
                'user_followers': user_followers, 'user_profile': user_profile,
-               'posts_and_likes': posts_and_likes, 'user_collected_posts': collection_posts}
+               'posts_and_likes': posts_and_likes, 'user_collected_posts': collection_posts, 'drafts': drafts, 'drafts_and_likes': drafts_and_likes}
     return HttpResponse(template.render(context, request))
 
 
@@ -301,8 +305,8 @@ def get_user_profile_collections(request, user_id):
 
 def get_ramblepost(request, post_id):
     try:
-        post = Post.objects.get(pk=post_id)
-        post_likes = len(Like.objects.filter(post_id=post))
+        post = Post.objects.get(pk=post_id, status=1)
+        post_likes =len(Like.objects.filter(post_id=post))
         comments = Comment.objects.filter(post_id=post, depth=0)
         commenters = [comment.user_id for comment in comments]
         commenter_profiles = {profile.user_id : profile 
@@ -313,6 +317,31 @@ def get_ramblepost(request, post_id):
 
     except Post.DoesNotExist:
         post = None
+        context = {}
+
+    loggedin_user_context = twitter_user_context(request)
+
+    total_context = {**context, **loggedin_user_context}
+
+    template = loader.get_template('rambleapp/post.html')
+    return HttpResponse(template.render(total_context, request))
+
+def get_rambledraft(request, draft_id):
+    try:
+        draft = Post.objects.get(pk=draft_id, status=0)
+        #draft_likes = len(Like.objects.filter(post_id=draft))
+        #comments = Comment.objects.filter(post_id=draft, depth=0)
+        #ommenters = [comment.user_id for comment in comments]
+        #commenter_profiles = {profile.user_id : profile 
+        #               for profile in Profile.objects.all().filter(user_id__in=commenters)}
+        #comment_and_profile_list = [(comment, commenter_profiles[comment.user_id]) for comment in comments]
+        #context = {'draft': draft, 'num_likes': draft_likes, \
+        #   'comments_and_profiles': comment_and_profile_list }
+
+        context = {'draft': draft }
+
+    except Post.DoesNotExist:
+        draft = None
         context = {}
 
     loggedin_user_context = twitter_user_context(request)
@@ -446,7 +475,6 @@ def save_draft(request):
     
         try:
             now=datetime.datetime.now()
-            print( " I am here")
             user = Auth_User.objects.get(pk=request.user.id)
             draft = Post(user_id=user, post_text=new_ramble_post, post_title=new_ramble_title, post_timestamp= now, status=0)
             #draft = Post.objects.create(post_title=new_ramble_title, post_text=new_ramble_post, tags=new_ramble_tags, post_timestamp= now)

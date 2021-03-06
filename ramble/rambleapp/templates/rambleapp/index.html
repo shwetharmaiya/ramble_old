@@ -8,6 +8,46 @@
     src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js"
     referrerpolicy="origin">
 </script> <!-- SRM -->
+ <style>
+body {font-family: Arial;}
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: #aaa;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #aaa;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #20B2AA;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+</style>
 <script>
     function getStats(id) 
     {
@@ -202,7 +242,7 @@
 
 </script>
 
-<a href="{% url 'load_draft' %}">Load Drafts</a>
+<!--<a href="{% url 'load_draft' %}">Load Drafts</a>-->
 
     {% csrf_token %}
     <div style="text-align:right;padding:0 10%">
@@ -223,9 +263,37 @@
     </div>
 
 
-{% for post, num_likes in posts_and_likes %}
-    {% include "./display_post.html" %}
-{% endfor %}
-
+    <div class="tab">
+        <button class="tablinks" onclick="openPost(event, 'published')">Published</button>
+        <button class="tablinks" onclick="openPost(event, 'drafts')">Drafts</button>
+    </div>
+      
+      <div id="published" class="tabcontent">
+            {% for post, num_likes in posts_and_likes %}
+            {% include "./display_post.html" %}
+            {% endfor %}
+          </div>
+      
+      <div id="drafts" class="tabcontent">
+        {% for draft, num_likes in drafts_and_likes %}
+            {% include "./display_draft.html" %}
+            {% endfor %}
+      </div>
+      
+      <script>
+        function openPost(evt, posttype) {
+          var i, tabcontent, tablinks;
+          tabcontent = document.getElementsByClassName("tabcontent");
+          for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablinks");
+          for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+          }
+          document.getElementById(posttype).style.display = "block";
+          evt.currentTarget.className += " active";
+        }
+        </script>
 
 {% endblock %}

@@ -18,6 +18,7 @@ urlpatterns = [
   path('mycollections/<int:post_id>', views.get_user_collections, name='mycollections'), 
 
   path('post/<int:post_id>', views.get_ramblepost, name='post'),
+  path('draft/<int:draft_id>', views.get_rambledraft, name='draft'),
 
   path('ramblepost', views.post_ramble, name='post_a_ramble'),
   path('save_draft', views.save_draft, name='save_draft'),

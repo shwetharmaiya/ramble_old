@@ -1,0 +1,57 @@
+{% load static %}
+
+
+<div id="draft_{{draft.pk}}" style="transition:all 1s ease" class="post">
+    <div class="post-title">
+        <a href="/draft/{{ draft.pk }}">{{ draft.post_title }}</a>
+
+        <button onclick="like_post({{ draft.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
+            {% if user_liked_posts and draft.pk in user_liked_posts %}
+                <img id="like_{{draft.pk}}" src="{% static 'images/liked_button.png' %}" width="12px" height="12px">
+            {% else %}
+                <img id="like_{{draft.pk}}" src="{% static 'images/like_button.png' %}" width="12px" height="12px">
+            {% endif %}
+        </button>
+        {% if num_likes > 0 %}
+            <a href='javascript:void(0)' onclick="openModalLikes({{draft.pk}})">{{ num_likes }} </a>
+        {% endif %}
+        <button onclick="collect_post({{ draft.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
+            {% if user_collected_posts and post.pk in user_collected_posts %}
+                <img id="collect_{{draft.pk}}" src="{% static 'images/collected_button.png' %}" width="12px" height="12px">
+            {% else %}
+                <img id="collect_{{draft.pk}}" src="{% static 'images/collect_button.png' %}" width="12px" height="12px">
+            {% endif %}
+        </button>
+
+    </div>
+
+    {% if post.tags.all %}
+        <div class='post-tags'>
+            Filed under: &nbsp; &nbsp;
+            {% for tag in post.tags.all %}
+                <a href="/tag/{{ tag }}" class='post-tag'> {{ tag }} </a> &nbsp; &nbsp; 
+            {% endfor %}
+        </div>
+    {% endif%}
+
+    <div id="post_txt_{{draft.pk}}" style="max-height:100px;overflow:hidden">
+    <p class="post-format">{{ draft.post_text|safe }}</p>
+    </div>
+    <a href="/draft/{{ draft.pk }}" id="more_link_{{draft.pk}}"
+    style="display:none">More...</a>
+    {% if draft.user_id.id == user.id %}
+        <button onclick="delete_post({{ draft.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
+            <img src="{% static 'images/delete2.png' %}" width="12px" height="12px">
+        </button>
+    {% endif %}
+</div>
+
+<script>
+    var div = document.getElementById("post_txt_{{draft.pk}}")
+    if ( "{{ request.path }}".startsWith("/draft/")) {
+        div.style.maxHeight = "none"
+    } else if (div.scrollHeight > div.clientHeight) {
+        var anchor = document.getElementById("more_link_{{draft.pk}}")
+        anchor.style.display = "block"
+    }
+</script>
