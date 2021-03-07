@@ -1,13 +1,34 @@
 {% extends './base.html' %}
 {% block content %}
 {% load static %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <!--<script src='https://cloud.tinymce.com/stable/tinymce.min.js'></script>-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script
     src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js"
     referrerpolicy="origin">
 </script> <!-- SRM -->
+<script>
+    $( function() {
+      var availableTags = [
+        "Fiction",
+        "Action and Adventure",
+        "Crime and Mystery",
+        "Non-Fiction",
+        "Fantasy",
+        "Horror",
+        "Romance",
+        "Science Fiction",
+        "Biography",
+        "Self-help",
+        "Travel"
+      ];
+      $( "#new_ramble_tags" ).autocomplete({
+        source: availableTags
+      });
+    } );
+    </script>
  <style>
 body {font-family: Arial;}
 
