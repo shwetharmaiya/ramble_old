@@ -22,6 +22,10 @@ class Profile(models.Model):
     profile_pic = models.ImageField(upload_to='profilepix/')
     bio = models.CharField(max_length=150)
 
+class Blocked(models.Model):
+    blocked_users = models.ForeignKey(Auth_User, related_name="blocked_users", on_delete=models.CASCADE)
+    blocked_by_users = models.ManyToManyField(Auth_User, related_name="blocked_by")
+
 class Post(models.Model):
     class Status(models.IntegerChoices):
         Draft = 0

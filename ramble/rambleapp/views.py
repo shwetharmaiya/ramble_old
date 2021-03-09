@@ -16,7 +16,7 @@ from django.shortcuts import render
 
 from social_django.models import UserSocialAuth
 
-from .models import Post, Like, Follow, Profile, InterestedUsers, Comment, Collection, CollectionPost
+from .models import Post, Like, Follow, Profile, InterestedUsers, Comment, Collection, CollectionPost, Blocked
 from .forms import ProfileForm
 
 # Pages
@@ -182,10 +182,11 @@ def get_user_profile(request, user_id):
         user_posts = Post.objects.filter(user_id=profile_user).order_by('-post_timestamp')
         user_posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in user_posts]
         profile_user_profile = Profile.objects.get(user_id=request.user.id)
-
+        blocked = Blocked.objects.filter(blocked_users=profile_user, blocked_by_users= request.user.id)
         profile_context = {'profile_user': profile_user, 'posts': user_posts,
                    'posts_and_likes': user_posts_and_likes,
                    'profile_user_profile': profile_user_profile,
+                    'blocked': blocked
                     }
     else:
         profile_context = {}
@@ -646,6 +647,32 @@ def follow_user(request):
         return HttpResponse(status=204)
     # If not, add relationship.
     followship.delete()
+    return HttpResponse(204)
+
+@login_required
+def block_user(request):
+    blocked_by_id = request.user.id
+    block_id = request.POST['profile_user']
+
+    if  blocked_by_id == block_id:
+        return HttpResponse(status=400)
+
+    try:
+        blocked_by = Auth_User.objects.get(pk=blocked_by_id)
+        block_id = Auth_User.objects.get(pk=block_id)
+    except Auth_User.DoesNotExist:
+        return HttpResponse(status=400)
+    
+    try:
+        blockship = Blocked.objects.get(blocked_by_users=blocked_by, blocked_users=block_id)
+    except:       
+        #new_blockship = Blocked(blocked_users=block_id)
+        #Blocked.blocked_by_users.set(new_blockship)
+        blockship = Blocked.objects.create(blocked_users=block_id)
+        blockship.blocked_by_users.add(blocked_by)
+        return HttpResponse(status=204)
+    
+    blockship.delete()
     return HttpResponse(204)
 
 

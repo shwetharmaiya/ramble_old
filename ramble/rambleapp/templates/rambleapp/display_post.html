@@ -1,4 +1,5 @@
 {% load static %}
+{% if not blocked %}
 
 <div id="post_{{post.pk}}" style="transition:all 1s ease" class="post">
     <div class="post-title">
@@ -77,3 +78,4 @@
         anchor.style.display = "block"
     }
 </script>
+{% endif %}

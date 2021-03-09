@@ -223,6 +223,38 @@
         }
     }
 
+    function block_user(profile_user, button_block_user_id) { 
+        var block_img = document.getElementById("block_"+profile_user);
+
+        if (document.getElementById("block_"+profile_user).src.endsWith("{% static 'images/blocked_button.png' %}"))
+        {
+            console.log("unblocking..");
+            document.getElementById("block_"+profile_user).src = "{% static 'images/block_button.png' %}";
+        }
+        else
+        {
+            document.getElementById("block_"+profile_user).src = "{% static 'images/blocked_button.png' %}";
+        }
+
+        data = {
+            profile_user : profile_user
+        }
+        var ajax = new XMLHttpRequest()
+        ajax.open("POST", "{% url 'block_user' %}")
+        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        ajax.onreadystatechange = function(response)
+        {
+            console.log(response, this.status, this.readyState)
+            
+        }
+
+        var formData = new FormData()
+        for(var i in data)
+            formData.append(i, data[i]);
+
+        ajax.send(formData)
+
+    } 
     function collect_post(post_id)
     {
         modalCollect.style.display = "block"

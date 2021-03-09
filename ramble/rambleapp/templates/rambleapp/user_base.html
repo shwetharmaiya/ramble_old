@@ -11,7 +11,13 @@
         <p>{{ profile_user_profile.full_name }} (@{{ profile_user.username}})</p>
         <p> {{ profile_user_profile.bio }}</p>
     </div>
-    
+    <button id="button_block_user_id" onclick="block_user({{ profile_user.pk }}, button_block_user_id)" class="iconbutton" style="margin-left:5px;padding:2px">
+        {% if blocked %}
+            <img id="block_{{profile_user.pk}}" src="{% static 'images/blocked_button.png' %}" width="12px" height="12px">
+        {% else %}
+            <img id="block_{{profile_user.pk}}" src="{% static 'images/block_button.png' %}" width="12px" height="12px">
+        {% endif %}
+    </button>
 {% else %}
     <p> 404 User Not Found</p>
 {% endif %}

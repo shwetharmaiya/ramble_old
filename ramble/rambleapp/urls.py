@@ -28,7 +28,7 @@ urlpatterns = [
   path('convertpost', views.convert_post, name='convert_a_ramble'),
 
   path('followuser', views.follow_user, name='follow_a_user'),
-
+  path('block_user', views.block_user, name='block_user'),
   path('commentpost', views.post_comment, name='post_a_comment'),
   path('deletecomment', views.delete_comment, name='delete_a_comment'),
   path('addtocollection', views.add_to_collection, name='add_to_collection'),
