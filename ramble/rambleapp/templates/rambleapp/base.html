@@ -254,7 +254,40 @@
 
         ajax.send(formData)
 
+    }
+    function mute_user(profile_user, button_mute_user_id) { 
+        var mute_img = document.getElementById("mute_"+profile_user);
+
+        if (document.getElementById("mute_"+profile_user).src.endsWith("{% static 'images/muted_user.png' %}"))
+        {
+            console.log("unmuting..");
+            document.getElementById("mute_"+profile_user).src = "{% static 'images/mute_user.png' %}";
+        }
+        else
+        {
+            document.getElementById("mute_"+profile_user).src = "{% static 'images/muted_user.png' %}";
+        }
+
+        data = {
+            profile_user : profile_user
+        }
+        var ajax = new XMLHttpRequest()
+        ajax.open("POST", "{% url 'mute_user' %}")
+        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        ajax.onreadystatechange = function(response)
+        {
+            console.log(response, this.status, this.readyState)
+            
+        }
+
+        var formData = new FormData()
+        for(var i in data)
+            formData.append(i, data[i]);
+
+        ajax.send(formData)
+
     } 
+
     function collect_post(post_id)
     {
         modalCollect.style.display = "block"

@@ -26,6 +26,10 @@ class Blocked(models.Model):
     blocked_users = models.ForeignKey(Auth_User, related_name="blocked_users", on_delete=models.CASCADE)
     blocked_by_users = models.ManyToManyField(Auth_User, related_name="blocked_by")
 
+class Muted(models.Model):
+    muted_users = models.ForeignKey(Auth_User, related_name="muted_users", on_delete=models.CASCADE)
+    muted_by_users = models.ManyToManyField(Auth_User, related_name="muted_by")
+
 class Post(models.Model):
     class Status(models.IntegerChoices):
         Draft = 0

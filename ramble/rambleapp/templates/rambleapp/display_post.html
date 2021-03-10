@@ -1,5 +1,5 @@
 {% load static %}
-{% if not blocked %}
+{% if not blocked and not muted %}
 
 <div id="post_{{post.pk}}" style="transition:all 1s ease" class="post">
     <div class="post-title">

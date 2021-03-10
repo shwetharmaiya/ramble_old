@@ -11,6 +11,7 @@
         <p>{{ profile_user_profile.full_name }} (@{{ profile_user.username}})</p>
         <p> {{ profile_user_profile.bio }}</p>
     </div>
+    <div align="center">
     <button id="button_block_user_id" onclick="block_user({{ profile_user.pk }}, button_block_user_id)" class="iconbutton" style="margin-left:5px;padding:2px">
         {% if blocked %}
             <img id="block_{{profile_user.pk}}" src="{% static 'images/blocked_button.png' %}" width="12px" height="12px">
@@ -18,6 +19,14 @@
             <img id="block_{{profile_user.pk}}" src="{% static 'images/block_button.png' %}" width="12px" height="12px">
         {% endif %}
     </button>
+    <button id="button_mute_user_id" onclick="mute_user({{ profile_user.pk }}, button_mute_user_id)" class="iconbutton" style="margin-left:5px;padding:2px">
+        {% if muted %}
+            <img id="mute_{{profile_user.pk}}" src="{% static 'images/muted_user.png' %}" width="12px" height="12px">
+        {% else %}
+            <img id="mute_{{profile_user.pk}}" src="{% static 'images/mute_user.png' %}" width="12px" height="12px">
+        {% endif %}
+    </button>
+    </div>
 {% else %}
     <p> 404 User Not Found</p>
 {% endif %}

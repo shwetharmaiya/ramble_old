@@ -16,7 +16,7 @@ from django.shortcuts import render
 
 from social_django.models import UserSocialAuth
 
-from .models import Post, Like, Follow, Profile, InterestedUsers, Comment, Collection, CollectionPost, Blocked
+from .models import Post, Like, Follow, Profile, InterestedUsers, Comment, Collection, CollectionPost, Blocked, Muted
 from .forms import ProfileForm
 
 # Pages
@@ -183,10 +183,12 @@ def get_user_profile(request, user_id):
         user_posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in user_posts]
         profile_user_profile = Profile.objects.get(user_id=request.user.id)
         blocked = Blocked.objects.filter(blocked_users=profile_user, blocked_by_users= request.user.id)
+        muted = Muted.objects.filter(muted_users=profile_user, muted_by_users= request.user.id)
         profile_context = {'profile_user': profile_user, 'posts': user_posts,
                    'posts_and_likes': user_posts_and_likes,
                    'profile_user_profile': profile_user_profile,
-                    'blocked': blocked
+                    'blocked': blocked,
+                    'muted': muted
                     }
     else:
         profile_context = {}
@@ -675,6 +677,29 @@ def block_user(request):
     blockship.delete()
     return HttpResponse(204)
 
+@login_required
+def mute_user(request):
+    muted_by_id = request.user.id
+    mute_id = request.POST['profile_user']
+
+    if  muted_by_id == mute_id:
+        return HttpResponse(status=400)
+
+    try:
+        muted_by = Auth_User.objects.get(pk=muted_by_id)
+        mute_id = Auth_User.objects.get(pk=mute_id)
+    except Auth_User.DoesNotExist:
+        return HttpResponse(status=400)
+    
+    try:
+        muteship = Muted.objects.get(muted_by_users=muted_by, muted_users=mute_id)
+    except:       
+        muteship = Muted.objects.create(muted_users=mute_id)
+        muteship.muted_by_users.add(muted_by)
+        return HttpResponse(status=204)
+    
+    muteship.delete()
+    return HttpResponse(204)
 
 @login_required
 def create_collection(request):
