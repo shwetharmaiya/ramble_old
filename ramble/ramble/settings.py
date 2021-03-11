@@ -45,7 +45,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'postman'
 ]
+
+POSTMAN_AUTO_MODERATE_AS = True 
+POSTMAN_QUICKREPLY_QUOTE_BODY = True
 
 MIDDLEWARE = [
     'social_django.middleware.SocialAuthExceptionMiddleware',

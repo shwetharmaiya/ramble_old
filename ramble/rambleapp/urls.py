@@ -50,6 +50,7 @@ urlpatterns = [
   path('signup_in', views.signup_in, name="signup_in"),
   path('post_signup', views.post_signup, name="post_signup"),
   path('subscribe_email', views.post_email, name='subscribe_email'),
+  path('messages/', include('postman.urls', namespace='postman')),
   # path('accounts/login/', views.login, name='sociallogin'),
   url(r'^oauth/', include('social_django.urls', namespace='social')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
