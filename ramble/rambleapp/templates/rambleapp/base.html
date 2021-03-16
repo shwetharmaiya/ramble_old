@@ -146,7 +146,78 @@
         ajax.send(formData)
 
     }
+    function hide_post(post_id)
+    {
+        var hide_div = document.getElementById("hide_"+post_id);
+        if (document.getElementById("hide_"+post_id).src.endsWith("{% static 'images/unhide.png' %}"))
+        {
+            console.log("unhiding...");
+            document.getElementById("hide_"+post_id).src = "{% static 'images/hide.png' %}";
+        }
+        else
+        {
+            document.getElementById("hide_"+post_id).src = "{% static 'images/unhide.png' %}";    
+        }
 
+        data = {
+            post_id: post_id,
+        }
+        var ajax = new XMLHttpRequest()
+        ajax.open("POST", "{% url 'hide_a_ramble' %}")
+        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        ajax.onreadystatechange = function(response)
+        {
+            console.log(response, this.status, this.readyState)
+            //setInterval('location.reload()', 3000);            
+            document.getElementById("post_"+post_id).style.display = "none";
+        }
+
+        var formData = new FormData()
+        for(var i in data)
+            formData.append(i, data[i]);
+
+        ajax.send(formData)
+
+    }
+
+    function amplify_post(post_id)
+    {
+        var amplify_div = document.getElementById("amplify_"+post_id);
+        var amp_count = 0 ;
+        if (document.getElementById("amplify_"+post_id).src.endsWith("{% static 'images/amplified_button.png' %}"))
+        {
+            console.log("unamplifying...");
+            document.getElementById("amplify_"+post_id).src = "{% static 'images/amplify_button.png' %}";
+            amp_count = -1; 
+        }
+        else
+        {   
+            document.getElementById("amplify_"+post_id).src = "{% static 'images/amplified_button.png' %}";    
+            amp_count = 1;
+        }
+        console.log("amp_count");
+        console.log(amp_count);
+        data = {
+            post_id: post_id,
+            amp_count : amp_count           
+        }
+        var ajax = new XMLHttpRequest()
+        ajax.open("POST", "{% url 'amplify_a_ramble' %}")
+        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        ajax.onreadystatechange = function(response)
+        {
+            console.log(response, this.status, this.readyState) 
+            //setInterval('location.reload()', 2000);
+            $('#amplify_div').load(document.URL +  ' #amplify_div');
+        }
+
+        var formData = new FormData()
+        for(var i in data)
+            formData.append(i, data[i]);
+
+        ajax.send(formData)
+
+    }
 
     function follow_user(user_id)
     {

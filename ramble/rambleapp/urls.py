@@ -26,6 +26,8 @@ urlpatterns = [
   path('deletepost', views.delete_post, name='delete_a_ramble'),
   path('likepost', views.like_post, name='like_a_ramble'),
   path('convertpost', views.convert_post, name='convert_a_ramble'),
+  path('hidepost', views.hide_post, name='hide_a_ramble'),
+  path('amplifypost', views.amplify_post, name='amplify_a_ramble'),  
 
   path('followuser', views.follow_user, name='follow_a_user'),
   path('block_user', views.block_user, name='block_user'),

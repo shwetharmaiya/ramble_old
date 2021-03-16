@@ -16,7 +16,7 @@ from django.shortcuts import render
 
 from social_django.models import UserSocialAuth
 
-from .models import Post, Like, Follow, Profile, InterestedUsers, Comment, Collection, CollectionPost, Blocked, Muted
+from .models import Post, Like, Follow, Profile, InterestedUsers, Comment, Collection, CollectionPost, Blocked, Muted, HidePost
 from .forms import ProfileForm
 
 # Pages
@@ -95,14 +95,17 @@ def index(request):
     drafts = Post.objects.filter(status=0).order_by('-post_timestamp')
 
     posts_and_likes = [(post, len(Like.objects.filter(post_id=post) )) for post in posts]
+    amplify_posts = [(post, Post.objects.filter(status=1).values('amplify_count')) for post in posts]
+    
     drafts_and_likes = [(draft, len(Like.objects.filter(post_id=draft))) for draft in drafts]
-   
+    hide_posts = [(HidePost.objects.filter(post_id=post, hide_status=1)) for post in posts]
+
     user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
     user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
     collection_posts = [post.post_id.pk for post in CollectionPost.objects.filter(collection_id__user_id=user)]
     context = {'posts': posts, 'user_liked_posts': user_liked_posts,
                'user_followers': user_followers, 'user_profile': user_profile,
-               'posts_and_likes': posts_and_likes, 'user_collected_posts': collection_posts, 'drafts': drafts, 'drafts_and_likes': drafts_and_likes}
+               'posts_and_likes': posts_and_likes, 'user_collected_posts': collection_posts, 'drafts': drafts, 'drafts_and_likes': drafts_and_likes, 'hide_posts':hide_posts, 'amplify_posts': amplify_posts}
     return HttpResponse(template.render(context, request))
 
 
@@ -180,6 +183,7 @@ def get_user_profile(request, user_id):
         profile_user = None
     if profile_user:
         user_posts = Post.objects.filter(user_id=profile_user).order_by('-post_timestamp')
+        hide_posts = [(post, HidePost.objects.filter(post_id=post, hide_status=1)) for post in user_posts]
         user_posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in user_posts]
         profile_user_profile = Profile.objects.get(user_id=request.user.id)
         blocked = Blocked.objects.filter(blocked_users=profile_user, blocked_by_users= request.user.id)
@@ -188,7 +192,8 @@ def get_user_profile(request, user_id):
                    'posts_and_likes': user_posts_and_likes,
                    'profile_user_profile': profile_user_profile,
                     'blocked': blocked,
-                    'muted': muted
+                    'muted': muted,
+                    'hide_posts': hide_posts
                     }
     else:
         profile_context = {}
@@ -315,8 +320,10 @@ def get_ramblepost(request, post_id):
         commenter_profiles = {profile.user_id : profile 
                         for profile in Profile.objects.all().filter(user_id__in=commenters)}
         comment_and_profile_list = [(comment, commenter_profiles[comment.user_id]) for comment in comments]
+        hide_post = HidePost.objects.filter(post_id=post, hide_status=1)
+        amplify_post = Post.objects.filter(pk=post_id, status=1).values('amplify_count')
         context = {'post': post, 'num_likes': post_likes, \
-            'comments_and_profiles': comment_and_profile_list }
+            'comments_and_profiles': comment_and_profile_list, 'hide_post': hide_post , 'amplify_post': amplify_post}
 
     except Post.DoesNotExist:
         post = None
@@ -354,7 +361,25 @@ def get_rambledraft(request, draft_id):
     template = loader.get_template('rambleapp/post.html')
     return HttpResponse(template.render(total_context, request))
 
+def amplify_post(request):
+    user = Auth_User.objects.get(pk=request.user.id)
+    post_id = request.POST.get('post_id', False)
+    amp_count = int(request.POST.get('amp_count'))
 
+    try:
+        post = Post.objects.get(pk=post_id, status=1)
+    except:
+        return HttpResponse(status=400)
+
+    if amp_count == -1:
+        post.amplify_count = post.amplify_count - 1
+    else: 
+        post.amplify_count += 1 
+    post.save() 
+    post.refresh_from_db()
+    
+    return HttpResponse(status=204)
+  
 def get_collection(request, collection_id):
     try:
         collection = Collection.objects.get(pk=collection_id)
@@ -454,6 +479,8 @@ def post_ramble(request):
 
     new_post = Post(user_id=user, post_text=post_text, post_title=post_title, status=1)
     new_post.save()
+    hide_post = HidePost(post_id=new_post, hide_status=0)
+    hide_post.save()
     # This is a many to many model, so you need to save it first, 
     # so it has a primary key
     # then you add tags to it using the add method. 
@@ -561,14 +588,32 @@ def delete_post(request):
         post = Post.objects.get(pk=post_id, status = 1 )
     elif draft_id is not False:
         post = Post.objects.get(pk=draft_id , status = 0 )
-
     if not post:
         return HttpResponse(status=400)
+
     if post.user_id == user:
         post.delete()
         return HttpResponse(status=204)
     else:
         return HttpResponse(status=400)
+
+@login_required
+def hide_post(request):
+    user = Auth_User.objects.get(pk=request.user.id)
+    post_id = request.POST.get('post_id', False)
+    if post_id is not False:
+        post = Post.objects.get(pk=post_id, status = 1 )
+    if not post:
+        return HttpResponse(status=400)
+    
+    try:
+        hide_post = HidePost.objects.get(post_id=post, hide_status=1)    
+    except: 
+        hide_post = HidePost(post_id=post, hide_status=1)
+        hide_post.save()
+        return HttpResponse(status=204)
+    
+    return HttpResponse(status=204)
 
 @login_required
 def convert_post(request):

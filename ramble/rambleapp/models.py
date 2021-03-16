@@ -43,6 +43,14 @@ class Post(models.Model):
     #status = models.IntegerField(choices=STATUS, default=0)
               
     status = models.IntegerField(choices=Status.choices, default=0)
+    amplify_count = models.IntegerField(default=0)
+
+class HidePost(models.Model): 
+    class HideStatus(models.IntegerChoices):
+        Hide = 0
+        Unhide = 1
+    post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
+    hide_status = models.IntegerField(choices = HideStatus.choices , default = 0 )
 
 class Collection(models.Model):
     user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)

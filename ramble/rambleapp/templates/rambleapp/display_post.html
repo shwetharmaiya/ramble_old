@@ -1,10 +1,28 @@
 {% load static %}
 {% if not blocked and not muted %}
-
+{% for hide_post in hide_posts %}
+    {% if hide_post.post_id == post.pk and hide_post.hide_status == 1 %}
+        <script>
+            document.getElementById("post_{{post.pk}}").style.display = "none";
+        </script>
+        {% endif %}
+{% endfor %}        
+        
 <div id="post_{{post.pk}}" style="transition:all 1s ease" class="post">
     <div class="post-title">
+      
         <a href="/post/{{ post.pk }}">{{ post.post_title }}</a>
+       
 
+        <button onclick="hide_post({{ post.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
+            {% if hide_post.hide_status == 1 %}
+                <img id="hide_{{post.pk}}" src="{% static 'images/unhide.png' %}" width="12px" height="12px">
+            {% else %}
+                <img id="hide_{{post.pk}}" src="{% static 'images/hide.png' %}" width="12px" height="12px">
+            {% endif %}
+        </button>
+        <!-- <img onclick="hide_post({{ post.pk }})" id="hide_{{post.pk}}" src="{% static 'images/unhide.png' %}" width="12px" height="12px">-->
+        
         <button onclick="like_post({{ post.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
             {% if user_liked_posts and post.pk in user_liked_posts %}
                 <img id="like_{{post.pk}}" src="{% static 'images/liked_button.png' %}" width="12px" height="12px">
@@ -22,6 +40,8 @@
                 <img id="collect_{{post.pk}}" src="{% static 'images/collect_button.png' %}" width="12px" height="12px">
             {% endif %}
         </button>
+       
+       
     </div>
     <div class="post-username">
        published: <a href="/post/{{ post.pk }}">{{ post.post_timestamp | timesince}} </a> ago by <a href="../u/{{ post.user_id.id }}">{{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
@@ -67,6 +87,19 @@
     </button>
     {% endif %}
 
+    <button onclick="amplify_post({{ post.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
+        
+        {% if amplify_posts.post_id == post.pk %}
+            <img id="amplify_{{post.pk}}" src="{% static 'images/amplified_button.png' %}" width="12px" height="12px">
+        {% else %}
+            <img id="amplify_{{post.pk}}" src="{% static 'images/amplify_button.png' %}" width="12px" height="12px">
+        {% endif %}
+        {% for amplify_p in amplify_post.all %}
+            <span id="amplify_id" style="color: black">{{amplify_p.amplify_count}} </span>
+        {% endfor %}
+       </button>
+   
+
 </div>
 
 <script>
@@ -78,4 +111,6 @@
         anchor.style.display = "block"
     }
 </script>
+
+
 {% endif %}
