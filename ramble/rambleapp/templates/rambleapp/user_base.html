@@ -12,6 +12,12 @@
         <p> {{ profile_user_profile.bio }}</p>
     </div>
     <div align="center">
+        <a href="/u/{{ user.id}}/likes"><button id="likes_user_profile" >Likes</button></a>
+        <a href="/u/{{ user.id}}/follows"><button id="follows_user_profile" >Follows</button></a>
+        <a href="/u/{{ user.id}}/followers"><button id="followers_user_profile" >Followers</button></a>
+        <a href="/u/{{ user.id}}/collections"><button id="collections_user_profile" >Collections</button></a>
+    </div>
+    <div align="center">
     <button id="button_block_user_id" onclick="block_user({{ profile_user.pk }}, button_block_user_id)" class="iconbutton" style="margin-left:5px;padding:2px">
         {% if blocked %}
             <img id="block_{{profile_user.pk}}" src="{% static 'images/blocked_button.png' %}" width="12px" height="12px">
