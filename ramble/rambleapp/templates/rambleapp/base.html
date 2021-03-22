@@ -430,6 +430,10 @@
     <div style="float: right;">
         {% if user.username %}
         <div style="text-align:right; font-size:small">
+            <form method="POST" action="{% url 'search_results' %}">
+                {% csrf_token %}
+                <input class="search" type="text" name="search_ramble" placeholder="Search Ramble">
+            </form>
             <p>
         {% if user_profile.full_name %}
                     Hello <a href="../u/{{ user.id }}"> {{ user_profile.full_name }}! </a>
@@ -440,6 +444,7 @@
                 <img src="{{ user_profile.profile_pic.url }}" width="20px"/>
                 <a href="{% url 'logout' %}"><button style="font-size:small">Logout</button></a>
              </p>
+        
         </div>
     {% else %}
 

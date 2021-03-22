@@ -1,0 +1,25 @@
+{% extends './base.html' %}
+{% block content %}
+{% load static %}
+<h1>Search Results for {{query}}: </h1>
+<h4> Posts</h4>
+<ul>
+  {% for post in object_list %}
+    <li>
+      <a href="/post/{{ post.pk }}">{{post.post_title}}</a>
+    </li>
+    {% empty %}
+      <li>Sorry, no posts which match the query.</li>
+  {% endfor %}
+</ul>
+<h4> Users</h4>
+<ul>
+  {% for user in user_list %}
+  <li>
+     <a href="/u/{{ user.id }}">{{user.username}}</a>
+  </li>
+  {% empty %}
+      <li>Sorry, no users which match the query.</li>
+</ul>
+{% endfor %}
+{% endblock %}

@@ -78,6 +78,13 @@ def post_email(request):
         return HttpResponse(204)
     return HttpResponseForbidden("Allowed Only Via Post")
 
+def search(request):
+    query = request.POST.get('search_ramble')
+    object_list = Post.objects.filter(post_title__icontains=query) 
+    user_list =  Auth_User.objects.filter(username__icontains = query)
+    template = loader.get_template('rambleapp/search_results.html')
+    context = {'object_list': object_list, 'user_list' : user_list, 'query': query  }
+    return HttpResponse(template.render(context, request))
 
 @login_required
 def index(request):
@@ -574,8 +581,8 @@ def post_comment(request):
         new_comment = Comment(user_id=user, post_id=post, comment_text=comment_text, 
                                 parent_id=parent_comment, depth=depth)
         new_comment.save()
-        #return HttpResponse(status=204)
-        return HttpResponse(status=200) #SRM
+        return HttpResponse(status=204)
+      
     return HttpResponseForbidden('allowed only via POST')
 
 
