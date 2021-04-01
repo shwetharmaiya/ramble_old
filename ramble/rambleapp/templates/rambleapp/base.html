@@ -266,6 +266,9 @@
         console.log(event)
         if (event.keyCode == 13) {
             var collection_name = document.getElementById("new_collection");
+             if (collection_name.value == '' ) { 
+                 collection_name.value = "Uncategorised"
+             }
              data = {
                 collection_name: collection_name.value,
                 collection_desc: '',

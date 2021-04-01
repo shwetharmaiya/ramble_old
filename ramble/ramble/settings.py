@@ -36,18 +36,20 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '111.222.333.444', 'www.ramble.today'
 
 INSTALLED_APPS = [
     'social_django',
+    'django.contrib.auth',
     'taggit',
     'rambleapp.apps.RambleappConfig',
     'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'crispy_forms',
-    'postman'
+    'postman',
+    'actstream',
 ]
-
+SITE_ID = 1
 POSTMAN_AUTO_MODERATE_AS = True 
 POSTMAN_QUICKREPLY_QUOTE_BODY = True
 
@@ -155,3 +157,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+ACTSTREAM_SETTINGS = {
+    'MANAGER': 'rambleapp.managers.MyActionManager',
+    'FETCH_RELATIONS': True,
+    'USE_PREFETCH': True,
+    'USE_JSONFIELD': True,
+    'GFK_FETCH_DEPTH': 1,
+}

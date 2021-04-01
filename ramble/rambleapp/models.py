@@ -8,6 +8,7 @@ from taggit.managers import TaggableManager
 
 import ramble.settings as settings
 
+from actstream import registry
 
 # Create your models here.
 

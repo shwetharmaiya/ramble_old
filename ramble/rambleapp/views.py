@@ -19,6 +19,8 @@ from social_django.models import UserSocialAuth
 from .models import Post, Like, Follow, Profile, InterestedUsers, Comment, Collection, CollectionPost, Blocked, Muted, HidePost
 from .forms import ProfileForm
 
+from actstream import action
+
 # Pages
 
 def landing_page(request):
@@ -384,6 +386,7 @@ def amplify_post(request):
         post.amplify_count += 1 
     post.save() 
     post.refresh_from_db()
+    action.send(request.user, verb='amplified/shared content', action_object=post, target= post.user_id)
     
     return HttpResponse(status=204)
   
@@ -581,6 +584,7 @@ def post_comment(request):
         new_comment = Comment(user_id=user, post_id=post, comment_text=comment_text, 
                                 parent_id=parent_comment, depth=depth)
         new_comment.save()
+        action.send(request.user, verb='created comment', action_object=new_comment, target= post.user_id)
         return HttpResponse(status=204)
       
     return HttpResponseForbidden('allowed only via POST')
@@ -673,6 +677,7 @@ def like_post(request):
         new_like.save()
         return HttpResponse(status=204)
 
+    action.send(request.user, verb='liked the content of', action_object=post, target= post.user_id)
     # if present, delete row
     like.delete()
     return HttpResponse(status=204)
@@ -694,10 +699,12 @@ def follow_user(request):
     # check in followers table if the following relationship exists.
     try:
         followship = Follow.objects.get(follower_id=follower, followee_id=followee)
+        action.send(follower, verb='followed the user', action_object=followship, target= followee)
     except:
         # if it does, delete record.
         new_followship = Follow(follower_id=follower, followee_id=followee)
         new_followship.save()
+        action.send(follower, verb='followed the user', action_object=new_followship, target= followee)
         return HttpResponse(status=204)
     # If not, add relationship.
     followship.delete()
