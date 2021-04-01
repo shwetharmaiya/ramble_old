@@ -137,8 +137,9 @@
     <div class="login-container">
         <div class="signup__container">
             <div class="container__child signup__form">
-                <form action="#">
-                    <div class="form-group">
+                <form action="{% url 'login' %}" method="POST">
+                  {% csrf_token %}    
+                  <div class="form-group">
                       <label for="email">Email</label><br/><br/>
                       <input class="form-control" id="email" type="email" name="email" placeholder="" required="" />
                     </div>
