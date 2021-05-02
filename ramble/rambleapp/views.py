@@ -1,3 +1,4 @@
+import os
 import json 
 import datetime
 from django.shortcuts import redirect
@@ -20,6 +21,7 @@ from .models import Post, Like, Follow, Profile, InterestedUsers, Comment, Colle
 from .forms import ProfileForm
 
 from actstream import action
+import re #SRM Notifications
 
 # Pages
 
@@ -112,9 +114,25 @@ def index(request):
     user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
     user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
     collection_posts = [post.post_id.pk for post in CollectionPost.objects.filter(collection_id__user_id=user)]
+    #SRM Show Collections on TL
+    all_collections = Collection.objects.filter(collection_status= 0)
+    for collection in all_collections:
+        all_collection_posts = [post for post in CollectionPost.objects.all()]
+    #SRM Private collections on TL
+    all_private_collection_posts = []
+    private_collections = Collection.objects.filter(collection_status= 1)
+    for pri_col in private_collections:
+        all_private_collection_posts = [post for post in CollectionPost.objects.filter(collection_id = pri_col)]
+    #SRM Private collections on TL
+    
     context = {'posts': posts, 'user_liked_posts': user_liked_posts,
                'user_followers': user_followers, 'user_profile': user_profile,
-               'posts_and_likes': posts_and_likes, 'user_collected_posts': collection_posts, 'drafts': drafts, 'drafts_and_likes': drafts_and_likes, 'hide_posts':hide_posts, 'amplify_posts': amplify_posts}
+               'posts_and_likes': posts_and_likes, 'user_collected_posts': collection_posts,
+               'drafts': drafts, 'drafts_and_likes': drafts_and_likes, 'hide_posts':hide_posts, 
+               'amplify_posts': amplify_posts, "all_collections": all_collections ,
+               'all_collection_posts': all_collection_posts, 
+               'all_private_collection_posts' : all_private_collection_posts }
+    #SRM Show Collections on TL
     return HttpResponse(template.render(context, request))
 
 
@@ -406,6 +424,21 @@ def get_collection(request, collection_id):
     template = loader.get_template('rambleapp/collection.html')
     return HttpResponse(template.render(total_context, request))
 
+def post_private_collection(request):
+    if request.method == 'POST':
+        collection_id = request.POST.get('collection_id')
+        collection_status = request.POST.get('collection_status')
+
+        coll = Collection.objects.get(pk=collection_id)
+        coll.collection_status = 1
+        coll.save()
+    context = {}        
+    loggedin_user_context = twitter_user_context(request)
+
+    total_context = {**context, **loggedin_user_context}
+
+    template = loader.get_template('rambleapp/collection.html')
+    return HttpResponse(template.render(total_context, request))
 
 @login_required
 def get_user_collections(request, post_id):
@@ -449,7 +482,6 @@ def likes_get(request, post_id):
 def login(request):
     user = request.user
     pswd = request.POST.get('pswd', False)
-
     try:
         twitter_login = user.social_auth.get(provider='twitter')
     except UserSocialAuth.DoesNotExist:
@@ -494,6 +526,14 @@ def post_ramble(request):
 
     new_post = Post(user_id=user, post_text=post_text, post_title=post_title, status=1)
     new_post.save()
+    #SRM Notifications
+    words = []
+    if '@' in post_text:
+        words= re.findall("@(\w+)", post_text)
+        for word in words: 
+            action.send(request.user, verb='directed at a user '+word+' in post', action_object=new_post)
+        
+    #SRM Notifications
     hide_post = HidePost(post_id=new_post, hide_status=0)
     hide_post.save()
     # This is a many to many model, so you need to save it first, 
@@ -590,6 +630,12 @@ def post_comment(request):
                                 parent_id=parent_comment, depth=depth)
         new_comment.save()
         action.send(request.user, verb='created comment', action_object=new_comment, target= post.user_id)
+        #SRM Notifications
+        if '@' in new_comment.comment_text:
+            words= re.findall("@(\w+)", new_comment.comment_text)
+            for word in words: 
+                action.send(request.user, verb='directed at a user '+word+' in comment', action_object=new_comment)
+        #SRM Notifications
         return HttpResponse(status=204)
       
     return HttpResponseForbidden('allowed only via POST')

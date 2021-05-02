@@ -16,6 +16,7 @@ urlpatterns = [
 
   path('collection/<int:collection_id>', views.get_collection, name='collection'),
   path('mycollections/<int:post_id>', views.get_user_collections, name='mycollections'), 
+  path('private_collections', views.post_private_collection, name='private_collections'), 
 
   path('post/<int:post_id>', views.get_ramblepost, name='post'),
   path('draft/<int:draft_id>', views.get_rambledraft, name='draft'),

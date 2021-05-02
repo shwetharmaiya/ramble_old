@@ -54,10 +54,15 @@ class HidePost(models.Model):
     hide_status = models.IntegerField(choices = HideStatus.choices , default = 0 )
 
 class Collection(models.Model):
+    #SRM Collections public or private
+    class CollectionStatus(models.IntegerChoices):
+        Public = 0
+        Private = 1
+    #SRM Collections public or private
     user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
     collection_name = models.CharField(max_length=100)
     collection_desc = models.CharField(max_length=1000)
-
+    collection_status = models.IntegerField(choices = CollectionStatus.choices , default = 0 ) #SRM Collections public or private
 
 class CollectionPost(models.Model):
     collection_id = models.ForeignKey(Collection, on_delete=models.CASCADE)

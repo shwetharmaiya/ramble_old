@@ -430,6 +430,37 @@
         ajax.send(formData)
     }
 
+    function click_private_collection(collection_id) {
+        pri_coll_id = 'private_collection_checkbox_'+collection_id;
+        
+        if ( $( '#pri_coll_id' ).is(':checked') ) { 
+            $( "#pri_coll_id" ).prop( "checked", false );
+            console.log("HELLO") 
+
+        } else { 
+        $( "#pri_coll_id" ).prop( "checked", true );
+        console.log("HELLO 1") 
+        data = {
+            collection_id: collection_id, 
+            collection_status: 1
+        }
+        var ajax = new XMLHttpRequest()
+        ajax.open("POST", "{% url 'private_collections' %}")
+        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        ajax.onreadystatechange = function(response)
+        {
+            console.log(response, this.status, this.readyState)
+        }
+
+        var formData = new FormData()
+        for(var i in data)
+            formData.append(i, data[i]);
+
+        ajax.send(formData)
+        }
+    }
+    
+
     function ajax_get(url, add_csrf, callback)
     {
         var ajax = new XMLHttpRequest()
@@ -488,7 +519,7 @@
 
   
        <a href="{% url 'signup_in' %}"><button id="signupbtn" >Sign Up/In</button></a>
-    {% endif    %}
+    {% endif      %}
     
          
     </div>

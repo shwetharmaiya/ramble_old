@@ -5,14 +5,16 @@
 </div>
 <div id='all_collections'>
 	{% for collection  in collections %}
-	<div>
+	<div id="each_collection_{{collection.pk}}">
 		<button id="collection_{{collection.pk}}" onclick='post_to_collection("{{collection.pk}}", "{{post_id}}")'>
 			{% if relevant_collections and collection.pk in relevant_collections %}
                 <img id="collection_post_({{ collection.pk }})" src="{% static 'images/collected.png' %}" width="12px" height="12px"> {{ collection.collection_name }}
-            {% else %}
+				{% else %}
                 <img id="collection_post_({{ collection.pk }})" src="{% static 'images/collect.png' %}" width="20px"/> {{ collection.collection_name }}
-            {% endif %}
-   		</button>
-   	</div>
+				{% endif %}
+		</button>
+		<input type="checkbox" id="private_collection_checkbox_{{collection.pk}}" name="private" onclick='click_private_collection("{{collection.pk}}")' value="Private Collection">
+		<label for="private_collection_checkbox_{{collection.pk}}">Click if Private</label><br>
+	</div>
 	{% endfor %}
 </div>

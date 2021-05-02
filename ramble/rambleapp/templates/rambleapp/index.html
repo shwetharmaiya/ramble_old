@@ -287,6 +287,8 @@ body {font-family: Arial;}
     <div class="tab">
         <button class="tablinks" onclick="openPost(event, 'published')">Published</button>
         <button class="tablinks" onclick="openPost(event, 'drafts')">Drafts</button>
+        <button class="tablinks" onclick="openPost(event, 'collections')">Public Collections</button>  <!-- SRM Show Collections on TL -->
+        <button class="tablinks" onclick="openPost(event, 'private')">Private</button>
     </div>
       
       <div id="published" class="tabcontent">
@@ -303,7 +305,25 @@ body {font-family: Arial;}
             {% endfor %}
       </div>
       
-      <script>
+      <!-- SRM Show Collections on TL -->
+      <div id="collections" class="tabcontent">
+        {% for post in all_collection_posts %}
+          <a href="collection/{{ post.collection_id.id  }}">{{ post.collection_id.collection_name }}</a>
+          <br>
+        {% endfor %}
+      </div>
+       <!-- SRM Show Collections on TL -->    
+      
+
+      <!-- SRM Private Collections on TL -->
+      <div id="private" class="tabcontent">
+        {% for post in all_private_collection_posts %}
+          <a href="collection/{{ post.collection_id.id  }}">{{ post.collection_id.collection_name }}</a>
+        {% endfor %}
+      </div>
+      <!-- SRM Private Collections on TL -->
+
+     <script>
         function openPost(evt, posttype) {
           var i, tabcontent, tablinks;
           tabcontent = document.getElementsByClassName("tabcontent");
