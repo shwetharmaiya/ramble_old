@@ -480,8 +480,13 @@ def likes_get(request, post_id):
 
 
 def login(request):
-    user = request.user
+    user = request.POST.get ('user', False)
     pswd = request.POST.get('pswd', False)
+    # Salted password SRM
+    salt = os.urandom(10)
+    if pswd is not False:
+        pswd = salt + pswd 
+    # Salted password SRM
     try:
         twitter_login = user.social_auth.get(provider='twitter')
     except UserSocialAuth.DoesNotExist:
@@ -490,9 +495,9 @@ def login(request):
         twitter_login = None
     template = loader.get_template('rambleapp/login.html')
 
-    if twitter_login is None and pswd is not False: 
+    if twitter_login is None and user is not False and pswd is not False: 
         user = authenticate(request, username=user, password=pswd)
-
+    
     posts = Post.objects.all().order_by('-post_timestamp')
     posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in posts]
    

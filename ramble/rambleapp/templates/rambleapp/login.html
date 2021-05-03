@@ -6,8 +6,7 @@
   {% if twitter_login %}
     <p>Connected as <a href="https://twitter.com/{{ twitter_login.extra_data.access_token.screen_name }}/" target="_blank">@{{ twitter_login.extra_data.access_token.screen_name }}</a></p>
     <br><a href="logout"><button>Logout</button></a>
-  {% endif %}
-  {% if user_details %}
+  {% elif user_details %}
   <p>Connected as <a href="{{ user_details }}/" target="_blank">@{{ user_details }}</a></p>
   <br><a href="logout"><button>Logout</button></a>
   {% endif %}
