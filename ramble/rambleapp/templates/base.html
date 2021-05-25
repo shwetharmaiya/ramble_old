@@ -1,10 +1,11 @@
-<html>
-<head>
-<title>{% block title %}{% endblock %}</title>
-{% block extrahead %}{% endblock %}
-</head>
-<body>
+{% extends "rambleapp/base.html" %}
+
+{% block head_title_base %}
+    {% block title %}
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+{% block content %}{% endblock %}    
 {% block postman_menu %}{% endblock %}
-{% block content %}{% endblock %}
-</body>
-</html>
+{% endblock %}
