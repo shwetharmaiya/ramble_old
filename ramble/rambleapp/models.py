@@ -21,7 +21,7 @@ class Profile(models.Model):
     user_id = models.OneToOneField(Auth_User, on_delete=models.CASCADE, unique=True)
     full_name = models.CharField(max_length=50)
     profile_pic = models.ImageField(upload_to='profilepix/')
-    bio = models.CharField(max_length=150)
+    bio = models.CharField(max_length=500)
 
 class Blocked(models.Model):
     blocked_users = models.ForeignKey(Auth_User, related_name="blocked_users", on_delete=models.CASCADE)

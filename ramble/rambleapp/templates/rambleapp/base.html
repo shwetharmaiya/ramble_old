@@ -42,6 +42,8 @@
                 setTimeout(function(){
                     deleted_post_div.style.height=0;
                 }, 1000)
+                $("html").html(this.responseText);
+                window.history.pushState("page2", "title", "/index")
             }
         }
 
