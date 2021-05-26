@@ -42,7 +42,10 @@
                 setTimeout(function(){
                     deleted_post_div.style.height=0;
                 }, 1000)
-                $("html").html(this.responseText);
+                //$("html").html(this.responseText);
+                document.open();
+                document.write(this.responseText);
+                document.close();
                 window.history.pushState("index", "title", "/index")
             }
         }
