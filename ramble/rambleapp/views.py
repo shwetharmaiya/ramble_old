@@ -22,6 +22,9 @@ from .forms import ProfileForm
 
 from actstream import action
 import re #SRM Notifications
+from backports.pbkdf2 import pbkdf2_hmac
+#from .AESCipher import *
+from simple_aes_cipher import AESCipher, generate_secret_key
 
 # Pages
 
@@ -51,16 +54,44 @@ def post_signup(request):
             return render(request, "rambleapp/signup_in.html", {
                 "message": "Passwords must match."
             })
+        # Salted password SRM
+        #password = bytes(password, 'utf-8')
+        if not type(password) == bytes:
+            password = password.encode()
+        size = 10
+        salt = os.urandom(size)
+        pass_key = pbkdf2_hmac("sha256", password, salt, 50000, 32)
+        pass_key = str(pass_key)
+        #print(type(pass_key))
+        #pass_key = unicode(pass_key, errors='ignore')
+        #pass_key = pass_key.encode("utf8","ignore")
+        #pass_key = to_bytes(pass_key.encode('utf-8'))
+        #try:
+        #    pass_key = pass_key.decode()
+        #    print("Here")
+        #except (UnicodeDecodeError, AttributeError):
+        #    print("Error")
+        #    pass
+
+        key = 'Store login securely'
+        key = generate_secret_key(key)
+        cipher = AESCipher(key)
+        encrypt_text = cipher.encrypt(pass_key)
+        print(encrypt_text)
+        assert pass_key != encrypt_text
+
+        #pass_key = cipher.encrypt(plain_text=pass_key)
+        # Salted password SRM
 
         try:
-            user = Auth_User.objects.create_user(username, email, password)
+            user = Auth_User.objects.create_user(username, email, encrypt_text) #Salted password SRM 
             user.save()
         except IntegrityError as e:
             print(e)
             return render(request, "rambleapp/signup_in.html", {
                 "message": "Email address already taken."
             })
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=username, password=encrypt_text) #Salted password SRM
         if user is not None:
             auth_login(request, user, backend="django.contrib.auth.backends.ModelBackend")
         #user = Auth_User.objects.get(username=username).pk
@@ -116,6 +147,7 @@ def index(request):
     collection_posts = [post.post_id.pk for post in CollectionPost.objects.filter(collection_id__user_id=user)]
     #SRM Show Collections on TL
     all_collections = Collection.objects.filter(collection_status= 0)
+    all_collection_posts = [] #UnBoundLocalError otherwise
     for collection in all_collections:
         all_collection_posts = [post for post in CollectionPost.objects.all()]
     #SRM Private collections on TL
@@ -483,9 +515,11 @@ def login(request):
     user = request.POST.get ('user', False)
     pswd = request.POST.get('pswd', False)
     # Salted password SRM
-    salt = os.urandom(10)
-    if pswd is not False:
-        pswd = salt + pswd 
+    size = 10
+    salt = os.urandom(size)
+    if user is not False and pswd is not False:
+        pass_key = pbkdf2_hmac("sha256", pswd, salt, 50000, 32)
+        pass_key = AESCipher.encrypt(pass_key)
     # Salted password SRM
     try:
         twitter_login = user.social_auth.get(provider='twitter')
@@ -496,7 +530,7 @@ def login(request):
     template = loader.get_template('rambleapp/login.html')
 
     if twitter_login is None and user is not False and pswd is not False: 
-        user = authenticate(request, username=user, password=pswd)
+        user = authenticate(request, username=user, password=pass_key)
     
     posts = Post.objects.all().order_by('-post_timestamp')
     posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in posts]
@@ -660,7 +694,8 @@ def delete_post(request):
 
     if post.user_id == user:
         post.delete()
-        return HttpResponse(status=204)
+        #return HttpResponse(status=204)
+        return redirect("index")
     else:
         return HttpResponse(status=400)
 

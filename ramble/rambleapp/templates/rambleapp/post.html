@@ -98,7 +98,7 @@ function submit_comment()
 
     }
 </script>
-
+{% if user.username %}
 <div id="commentForm" style="width=60%">
 	<textarea id="new_ramble_comment" name="new_ramble_comment" maxlength="1000" 
 	placeholder="How did the post make you feel?"
@@ -107,5 +107,6 @@ function submit_comment()
     <input type="hidden" id="post_id" name="post_id" value="{{post.pk}}">
     <button style="text-align:right" onclick="submit_comment()">Comment</button>
 </div>
+{% endif %}
 {% endblock %}
 
