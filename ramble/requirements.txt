@@ -1,6 +1,6 @@
 certifi==2018.11.29
 chardet==3.0.4
-defusedxml==0.5.0
+defusedxml==0.6.0
 Django
 idna==2.8
 oauthlib==2.1.0
@@ -14,3 +14,8 @@ social-auth-app-django==3.1.0
 social-auth-core==2.0.0
 urllib3
 django-taggit
+django-postman
+Simple-AES-Cipher
+backports.pbkdf2
+git+https://github.com/justquick/django-activity-stream.git@41d72782b9bcec91bec31ef3f6f8b3a3f249f655#egg=django_activity_stream
+django-crispy-forms

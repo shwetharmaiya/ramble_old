@@ -29,7 +29,7 @@ SECRET_KEY = '!gw*9u^uy%$1d)jh=e5#cd9k9^q9g6a9#llzitr=5ez3bzmg7b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '111.222.333.444', 'www.ramble.today']
+ALLOWED_HOSTS = ['ramble.shwetharmaiya.repl.co','3cfd9715-c805-4599-a422-d42520609b49.id.repl.co','0.0.0.0', 'localhost', '127.0.0.1', '111.222.333.444', 'www.ramble.today']
 
 
 # Application definition
