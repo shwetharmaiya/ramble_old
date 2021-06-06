@@ -293,9 +293,11 @@ body {font-family: Arial;}
       
       <div id="published" class="tabcontent">
             {% for post, num_likes in posts_and_likes %}
+          {% if  post.user_id.id  == request.user.id %}          
             {% if amplify_posts %}
               {% include "./display_post.html" %}
             {% endif %}
+          {% endif %}
             {% endfor %}
           </div>
       
