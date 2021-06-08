@@ -167,10 +167,12 @@ body {font-family: Arial;}
      $(document).ready(function() { 
      $("#draft").on("click", function() { 
         console.log("In save draft script");
-        data = {
-            new_ramble_title: new_ramble_title.value,
-            new_ramble_post: tinyMCE.activeEditor.getContent(),
-            new_ramble_tags: new_ramble_tags.value
+        if ( tinyMCE.activeEditor !== null ) { 
+          data = {
+              new_ramble_title: new_ramble_title.value,
+              new_ramble_post: tinyMCE.activeEditor.getContent(),
+              new_ramble_tags: new_ramble_tags.value
+          }
         }
        
         $.ajax({
@@ -179,7 +181,11 @@ body {font-family: Arial;}
             data: data,
             type: 'POST',
             success: function() {
-                alert('Saved the draft.')
+                console.log('Saved the draft.')
+                if ( tinyMCE.activeEditor !== null) { 
+                  tinyMCE.activeEditor.setContent("");
+                }
+                $("body").load(location.href+"#body");
             }
         });
     });
