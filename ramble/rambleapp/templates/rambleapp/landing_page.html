@@ -16,9 +16,14 @@
 				console.log(event)
 				if (event.keyCode == 13) {
 					var entered_email = document.getElementById("email_sub");
-					 data = {
+					if(entered_email.value === ""){
+						alert("Please Enter Valid Email Id");
+            			return false;
+				 	} else {
+						data = {
             			email: entered_email.value,
         			}
+					}	
         		var ajax = new XMLHttpRequest()
         		ajax.open("POST", "{% url 'subscribe_email' %}")
         		ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
@@ -40,9 +45,15 @@
 			function submit_email() 
 			{
 				var entered_email = document.getElementById("email_sub");
+				
+				if(entered_email.value === ""){
+					alert("Please Enter Valid Email Id");
+            		return false;
+				 } else {
 				data = {
             			email: entered_email.value,
         			}
+				}
         		var ajax = new XMLHttpRequest()
         		ajax.open("POST", "{% url 'subscribe_email' %}")
         		ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
