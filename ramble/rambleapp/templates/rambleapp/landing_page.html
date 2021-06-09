@@ -12,11 +12,17 @@
 		<title>	Ramble | Write, Read, Curate </title>
 
 		<script type="text/javascript">
+		function validateEmail(email) 
+    	{
+        	var re = /^[^\s@]+@[^\s@]+$/;
+        	return re.test(email);
+   	    }
+    
 			function keypressed(event) {
 				console.log(event)
 				if (event.keyCode == 13) {
 					var entered_email = document.getElementById("email_sub");
-					if(entered_email.value === ""){
+					if(!validateEmail (entered_email.value)){
 						alert("Please Enter Valid Email Id");
             			return false;
 				 	} else {
@@ -46,7 +52,7 @@
 			{
 				var entered_email = document.getElementById("email_sub");
 				
-				if(entered_email.value === ""){
+				if(!validateEmail(entered_email.value)){
 					alert("Please Enter Valid Email Id");
             		return false;
 				 } else {
