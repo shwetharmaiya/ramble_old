@@ -244,7 +244,12 @@ def get_user_profile(request, user_id):
         user_posts = Post.objects.filter(user_id=profile_user).order_by('-post_timestamp')
         hide_posts = [(post, HidePost.objects.filter(post_id=post, hide_status=1)) for post in user_posts]
         user_posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in user_posts]
-        profile_user_profile = Profile.objects.get(user_id=request.user.id)
+        try:
+            profile_user_profile = Profile.objects.get(user_id=request.user.id)
+        except: 
+            template = loader.get_template('404.html')
+            context = {}
+            return HttpResponse(template.render(context, request))
         blocked = Blocked.objects.filter(blocked_users=profile_user, blocked_by_users= request.user.id)
         muted = Muted.objects.filter(muted_users=profile_user, muted_by_users= request.user.id)
         profile_context = {'profile_user': profile_user, 'posts': user_posts,
