@@ -141,7 +141,8 @@
         ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
         ajax.onreadystatechange = function(response)
         {
-            console.log(response, this.status, this.readyState)
+            console.log(response, this.status, this.readyState);
+            $('#like_count').load(document.URL +  ' #like_count');
         }
 
         var formData = new FormData()
