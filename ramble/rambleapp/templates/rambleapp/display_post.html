@@ -51,9 +51,9 @@
             <button class="iconbutton" onclick="follow_user({{ post.user_id.id }})" style="margin-left:5px;padding:2px">
 
             {% if user_followers and post.user_id.id in user_followers %}
-                <img id="useradd_{{ post.user_id.id }}" src="{% static 'images/follows.png' %}" width="10px" height="10px">
+                <img class="imagePath" id="useradd_{{ post.user_id.id }}" src="{% static 'images/follows.png' %}" width="10px" height="10px">
             {% else %}
-                <img id="useradd_{{ post.user_id.id }}" src="{% static 'images/follow.png' %}" width="10px" height="10px">
+                <img class="imagePath" id="useradd_{{ post.user_id.id }}" src="{% static 'images/follow.png' %}" width="10px" height="10px">
             {% endif %}
         </button>
         {% endif %}

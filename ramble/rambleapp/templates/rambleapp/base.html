@@ -227,26 +227,35 @@
 
     function follow_user(user_id)
     {
-        if (document.getElementById("useradd_"+user_id).src.endsWith("{% static 'images/follows.png' %}"))
-        {
-            console.log("unfollowing...");
-            document.getElementById("useradd_"+user_id).src = "{% static 'images/follow.png' %}";
-        }
-        else
-        {
-            console.log("following...");
-            document.getElementById("useradd_"+user_id).src = "{% static 'images/follows.png' %}";
-        }
+        var getId = document.getElementById("useradd_" + user_id);
+        var imagePath = $('.imagePath');
 
+        if (document.getElementById("useradd_" + user_id).src.endsWith("{% static 'images/follows.png' %}")) {
+            console.log("unfollowing...");
+            imagePath.attr('src', imagePath.attr('src').replace("{% static 'images/follows.png' %}", "{% static 'images/follow.png' %}"));
+        }
+        else {
+            console.log("following...");
+            imagePath.attr('src', imagePath.attr('src').replace("{% static 'images/follow.png' %}", "{% static 'images/follows.png' %}"));
+        }
         data = {
             user_id: user_id,
         }
         var ajax = new XMLHttpRequest()
         ajax.open("POST", "{% url 'follow_a_user' %}")
         ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
-        ajax.onreadystatechange = function(response)
-        {
-            console.log(response, this.status, this.readyState)
+        ajax.onreadystatechange = function (response) {
+            console.log(response, this.status, this.readyState);
+            if (this.status != 204 || this.status !=200) {
+                if (document.getElementById("useradd_" + user_id).src.endsWith("{% static 'images/follow.png' %}")) {
+                    console.log("unfollowing...");
+                    imagePath.attr('src', imagePath.attr('src').replace("{% static 'images/follow.png' %}", "{% static 'images/follows.png' %}"));
+                }
+                else {
+                    console.log("following...");
+                    imagePath.attr('src', imagePath.attr('src').replace("{% static 'images/follows.png' %}", "{% static 'images/follow.png' %}"));
+                }
+            }
         }
 
         var formData = new FormData()
