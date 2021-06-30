@@ -407,7 +407,16 @@
 
     function post_to_collection(collection_id, post_id)
     {
-        user_comments = prompt("Any nice thing to say about this piece?")
+        user_comments = prompt("Any nice thing to say about this piece?");
+        collId = $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("id");
+        collSrc = $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("src");
+        if (collSrc.endsWith("{% static 'images/collected.png' %}")) {
+            console.log("un-collecting");   
+            $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("src", "{% static 'images/collect.png' %}");    
+        } else { 
+            console.log("collecting");     
+            $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("src",  "{% static 'images/collected.png' %}");
+        }
         data = {
             collection_id: collection_id, 
             post_id: post_id, 
@@ -416,26 +425,19 @@
         var ajax = new XMLHttpRequest()
         ajax.open("POST", "{% url 'add_to_collection' %}")
         ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
-        ajax.onreadystatechange = function(response)
-        {
-            console.log(response, this.status, this.readyState)
-            //SRM
-            $(document).ready(function() {
-            console.log("POST COLLECTION CLICK ")
-            coll_id =  'collection_'+collection_id
-            $(document).on("click", "#coll_id", function () {
-                if (document.getElementById("collection_post_"+collection_id).src.endsWith("{% static 'images/collected.png' %}"))
-                {
-                    console.log("un-collecting...");
-                    document.getElementById("collection_post_"+collection_id).src = "{% static 'images/collect.png' %}";
+        ajax.onreadystatechange = function (response) {
+            console.log(response, this.status, this.readyState);
+            if (this.status != 204) {
+                collId = $('#modalCollectInner').children("#all_collections").children('#' + "each_collection_" + collection_id).children('#' + "collection_" + collection_id).children().attr("id");
+                collSrc = $('#modalCollectInner').children("#all_collections").children('#' + "each_collection_" + collection_id).children('#' + "collection_" + collection_id).children().attr("src");
+                if (collSrc.endsWith("{% static 'images/collect.png' %}")) {
+                    console.log("collecting");
+                    $('#modalCollectInner').children("#all_collections").children('#' + "each_collection_" + collection_id).children('#' + "collection_" + collection_id).children().attr("src", "{% static 'images/collected.png' %}");
+                } else {
+                    console.log("un-collecting");
+                    $('#modalCollectInner').children("#all_collections").children('#' + "each_collection_" + collection_id).children('#' + "collection_" + collection_id).children().attr("src", "{% static 'images/collect.png' %}");
                 }
-                else
-                {   
-                    document.getElementById("collection_post_"+collection_id).src = "{% static 'images/collected.png' %}";
-                }
-            });
-        });
-            //SRM
+            }
         }
 
         var formData = new FormData()
