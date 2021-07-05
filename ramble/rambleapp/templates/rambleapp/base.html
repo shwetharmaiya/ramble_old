@@ -291,40 +291,43 @@
             var ajax = new XMLHttpRequest()
             ajax.open("POST", "{% url 'create_collection' %}")
             ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
-            ajax.onreadystatechange = function(response)
-            {
+            ajax.onreadystatechange = function(response) {
                 console.log(response, this.status, this.readyState)
-
                 if (this.readyState == 4) {
                     var json = JSON.parse(this.responseText);
                     new_button = document.createElement('button')
                     new_button.setAttribute('id', 'collection_' + json.id)
                     imgsrc = "{% static 'images/collect.png' %}"
-                    new_button.innerHTML = '<img src="' + imgsrc + '" width="20px"/>' + json.name 
+                    imgsrcCollected = "{% static 'images/collected.png' %}"
+                    new_button.innerHTML = '<img src="' + imgsrc + '" width="20px"/>' + json.name
                     colls = document.getElementById('all_collections')
                     colls.insertBefore(new_button, colls.firstChild)
-                    //SRM
-                    $(document).ready(function () {
-                        console.log("KEY PRESS COLLECTION CLICK 1") 
-                        coll_id = "collection_"+json.id            
-                    $('#coll_id').on('click', function () {
-                        console.log("KEY PRESS COLLECTION CLICK")
-                        if (document.getElementById('"collection_post_"+json.id').src.endsWith("{% static 'images/collected.png' %}"))
-                        {
-                            console.log("un-collecting...");
-                            document.getElementById('"collection_post_"+json.id').src = "{% static 'images/collect.png' %}";
+                    collId = $('#modalCollectInner').children("#all_collections").children('#' + "collection_" + json.id).attr("id");
+                    coll = $('#modalCollectInner').children("#all_collections").children('#' + "collection_" + json.id).children();
+                    collSrc = $('#modalCollectInner').children("#all_collections").children('#' + "collection_" + json.id).children().attr("src");
+                    console.log(collId);
+                    console.log(collSrc);
+                    $('#' + collId).on("click", function () {
+                        console.log("key press colleciton click" + coll.src);
+                        if (coll.attr("src").endsWith(imgsrcCollected)) {
+                            console.log("un-collecting");
+                            $('#modalCollectInner').children("#all_collections").children('#' + "collection_" + json.id).children().attr("src", imgsrc);
+                            console.log($(coll).attr("src"));
+                        } else {
+                            console.log("collecting");
+                            $('#modalCollectInner').children("#all_collections").children('#' + "collection_" + json.id).children().attr("src", imgsrcCollected);
+                            console.log($(coll).attr("src"));
                         }
-                        else
-                        {   
-                            document.getElementById('"collection_post_"+json.id').src = "{% static 'images/collected.png' %}";
-                        }
+                        $.ajax({
+                            complete: function () {
+                                
+                            }
                         });
                     });
-                    //SRM
                 }
             }
             var formData = new FormData()
-            for(var i in data)
+            for (var i in data)
                 formData.append(i, data[i]);
             ajax.send(formData)
         }
@@ -408,13 +411,16 @@
     function post_to_collection(collection_id, post_id)
     {
         user_comments = prompt("Any nice thing to say about this piece?");
+        if (user_comments == null ) { 
+            return false;
+        }
         collId = $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("id");
         collSrc = $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("src");
         if (collSrc.endsWith("{% static 'images/collected.png' %}")) {
-            console.log("un-collecting");   
+            console.log("un-collecting post_to_collection");   
             $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("src", "{% static 'images/collect.png' %}");    
         } else { 
-            console.log("collecting");     
+            console.log("collecting post_to_collection");     
             $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("src",  "{% static 'images/collected.png' %}");
         }
         data = {
@@ -427,14 +433,15 @@
         ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
         ajax.onreadystatechange = function (response) {
             console.log(response, this.status, this.readyState);
-            if (this.status != 204) {
+            if (this.readyState == 4 && (this.status != 200 || response.target.response != 204)) {
                 collId = $('#modalCollectInner').children("#all_collections").children('#' + "each_collection_" + collection_id).children('#' + "collection_" + collection_id).children().attr("id");
+                console.log("Inside post_to_collection error state")
                 collSrc = $('#modalCollectInner').children("#all_collections").children('#' + "each_collection_" + collection_id).children('#' + "collection_" + collection_id).children().attr("src");
                 if (collSrc.endsWith("{% static 'images/collect.png' %}")) {
-                    console.log("collecting");
+                    console.log("collecting error part of post_to_collection");
                     $('#modalCollectInner').children("#all_collections").children('#' + "each_collection_" + collection_id).children('#' + "collection_" + collection_id).children().attr("src", "{% static 'images/collected.png' %}");
                 } else {
-                    console.log("un-collecting");
+                    console.log("un-collecting error part of post_to_collection");
                     $('#modalCollectInner').children("#all_collections").children('#' + "each_collection_" + collection_id).children('#' + "collection_" + collection_id).children().attr("src", "{% static 'images/collect.png' %}");
                 }
             }
