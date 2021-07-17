@@ -904,3 +904,28 @@ def add_to_collection(request):
         return HttpResponse(204)
 
     return HttpResponseForbidden('allowed only via POST')
+
+@login_required
+def remove_from_collection(request):
+    if request.method == 'POST':
+        user_id = request.user.id 
+        try:
+            collector = Auth_User.objects.get(pk=user_id)
+        except Auth_User.DoesNotExist:
+            return HttpResponse(status=400, reason="User does not exist!")
+        collection_id = request.POST['collection_id']
+        try:
+            collection = Collection.objects.get(pk=collection_id)
+        except Collection.DoesNotExist:
+            return HttpResponse(status=400, reason="Collection does not exist!")
+        post_id = request.POST['post_id']
+        try:
+            post = Post.objects.get(pk=post_id)
+        except Post.DoesNotExist:
+            return HttpResponse(status=400, reason="Post does not exist!")
+        if collector != collection.user_id:
+            return HttpResponse(status=400, reason="user isn't owner of the collection!")
+        instance = CollectionPost.objects.get(collection_id=collection, post_id=post)
+        instance.delete()
+        return HttpResponse(204)
+    return HttpResponseForbidden('allowed only via POST')

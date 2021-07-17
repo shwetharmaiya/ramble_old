@@ -37,6 +37,7 @@ urlpatterns = [
   path('commentpost', views.post_comment, name='post_a_comment'),
   path('deletecomment', views.delete_comment, name='delete_a_comment'),
   path('addtocollection', views.add_to_collection, name='add_to_collection'),
+  path('remove_from_collection', views.remove_from_collection, name='remove_from_collection'),
   path('createcollection', views.create_collection, name='create_collection'),
 
   path('likes_get/<int:post_id>', views.likes_get, name='likes_get'),

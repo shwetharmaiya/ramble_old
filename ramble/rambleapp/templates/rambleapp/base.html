@@ -414,24 +414,41 @@
         if (user_comments == null ) { 
             return false;
         }
-        collId = $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("id");
-        collSrc = $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("src");
-        if (collSrc.endsWith("{% static 'images/collected.png' %}")) {
-            console.log("un-collecting post_to_collection");   
-            $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("src", "{% static 'images/collect.png' %}");    
-        } else { 
-            console.log("collecting post_to_collection");     
-            $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("src",  "{% static 'images/collected.png' %}");
-        }
         data = {
             collection_id: collection_id, 
             post_id: post_id, 
             user_comments: user_comments,
         }
-        var ajax = new XMLHttpRequest()
-        ajax.open("POST", "{% url 'add_to_collection' %}")
-        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
-        ajax.onreadystatechange = function (response) {
+        collId = $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("id");
+        collSrc = $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("src");
+        if (collSrc.endsWith("{% static 'images/collected.png' %}")) {
+            console.log("un-collecting post_to_collection");   
+            $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("src", "{% static 'images/collect.png' %}");    
+            var ajax = new XMLHttpRequest()
+            ajax.open("POST", "{% url 'remove_from_collection' %}")
+            ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+            ajax.onreadystatechange = function (response) {
+            console.log(response, this.status, this.readyState);
+            if (this.readyState == 4 && (this.status != 200 || response.target.response != 204)) {
+                collId = $('#modalCollectInner').children("#all_collections").children('#' + "each_collection_" + collection_id).children('#' + "collection_" + collection_id).children().attr("id");
+                console.log("Inside post_to_collection error state - ")
+                collSrc = $('#modalCollectInner').children("#all_collections").children('#' + "each_collection_" + collection_id).children('#' + "collection_" + collection_id).children().attr("src");
+                if (collSrc.endsWith("{% static 'images/collected.png' %}")) {
+                    console.log("collecting error part of post_to_collection");
+                    $('#modalCollectInner').children("#all_collections").children('#' + "each_collection_" + collection_id).children('#' + "collection_" + collection_id).children().attr("src", "{% static 'images/collect.png' %}");
+                } else {
+                    console.log("un-collecting error part of post_to_collection");
+                    $('#modalCollectInner').children("#all_collections").children('#' + "each_collection_" + collection_id).children('#' + "collection_" + collection_id).children().attr("src", "{% static 'images/collected.png' %}");
+                }
+            }
+        }
+        } else { 
+            console.log("collecting post_to_collection");     
+            $('#modalCollectInner').children("#all_collections").children('#'+ "each_collection_"+collection_id).children('#'+ "collection_"+collection_id).children().attr("src",  "{% static 'images/collected.png' %}");
+            var ajax = new XMLHttpRequest()
+            ajax.open("POST", "{% url 'add_to_collection' %}")
+            ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+            ajax.onreadystatechange = function (response) {
             console.log(response, this.status, this.readyState);
             if (this.readyState == 4 && (this.status != 200 || response.target.response != 204)) {
                 collId = $('#modalCollectInner').children("#all_collections").children('#' + "each_collection_" + collection_id).children('#' + "collection_" + collection_id).children().attr("id");
@@ -446,6 +463,9 @@
                 }
             }
         }
+        }
+        
+        
 
         var formData = new FormData()
         for(var i in data)
