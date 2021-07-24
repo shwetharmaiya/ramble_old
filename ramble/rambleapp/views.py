@@ -153,6 +153,7 @@ def index(request):
     #SRM Private collections on TL
     all_private_collection_posts = []
     private_collections = Collection.objects.filter(collection_status= 1)
+    private_collections = list(set(private_collections))
     for pri_col in private_collections:
         all_private_collection_posts = [post for post in CollectionPost.objects.filter(collection_id = pri_col)]
     #SRM Private collections on TL
@@ -163,6 +164,7 @@ def index(request):
                'drafts': drafts, 'drafts_and_likes': drafts_and_likes, 'hide_posts':hide_posts, 
                'amplify_posts': amplify_posts, "all_collections": all_collections ,
                'all_collection_posts': all_collection_posts, 
+               'private_collections' : private_collections,
                'all_private_collection_posts' : all_private_collection_posts }
     #SRM Show Collections on TL
     return HttpResponse(template.render(context, request))
@@ -465,17 +467,26 @@ def post_private_collection(request):
     if request.method == 'POST':
         collection_id = request.POST.get('collection_id')
         collection_status = request.POST.get('collection_status')
+        collection = Collection.objects.get(pk=collection_id)
+        collection_posts = CollectionPost.objects.filter(collection_id=collection)
+        collection_user_profile = Profile.objects.get(user_id=collection.user_id)
+        
+        if collection_status is 1: 
+            coll = Collection.objects.get(pk=collection_id)
+            coll.collection_status = 1
+            coll.save()
+        else: 
+            coll = Collection.objects.get(pk=collection_id)
+            coll.collection_status = 0
+            coll.save() 
+        
+        context = {'collection': collection, 'collection_posts': collection_posts, 'collector_profile': collection_user_profile}
+        loggedin_user_context = twitter_user_context(request)
 
-        coll = Collection.objects.get(pk=collection_id)
-        coll.collection_status = 1
-        coll.save()
-    context = {}        
-    loggedin_user_context = twitter_user_context(request)
+        total_context = {**context, **loggedin_user_context}
 
-    total_context = {**context, **loggedin_user_context}
-
-    template = loader.get_template('rambleapp/collection.html')
-    return HttpResponse(template.render(total_context, request))
+        template = loader.get_template('rambleapp/collection.html')
+        return HttpResponse(template.render(total_context, request))
 
 @login_required
 def get_user_collections(request, post_id):

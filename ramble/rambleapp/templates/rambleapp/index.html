@@ -325,8 +325,12 @@ body {font-family: Arial;}
 
       <!-- SRM Private Collections on TL -->
       <div id="private" class="tabcontent">
-        {% for post in all_private_collection_posts %}
-          <a href="collection/{{ post.collection_id.id  }}">{{ post.collection_id.collection_name }}</a>
+        {% for collection in private_collections %}
+        {% if request.user == collection.user_id %}
+          <a href="collection/{{ collection.id }}">{{ collection.collection_name }}</a>
+        {% else %}
+          <h3> ERROR - user {{request.user }} not allowed to view this collection {{collection.collection_name}}.</h3>
+        {% endif %}
         {% endfor %}
       </div>
       <!-- SRM Private Collections on TL -->
