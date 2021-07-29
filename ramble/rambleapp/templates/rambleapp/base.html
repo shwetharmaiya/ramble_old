@@ -476,24 +476,35 @@
 
     function click_private_collection(collection_id) {
         pri_coll_id = 'private_collection_checkbox_'+collection_id;
-        
-        if ( $( '#pri_coll_id' ).is(':checked') ) { 
-            $( "#pri_coll_id" ).prop( "checked", false );
-            console.log("HELLO") 
 
+        if ( $('#' + 'private_collection_checkbox_'+collection_id).is(':checked') == false )  { 
+            collection_status = 0 ;
         } else { 
-        $( "#pri_coll_id" ).prop( "checked", true );
-        console.log("HELLO 1") 
+            collection_status = 1 ;
+        }
         data = {
             collection_id: collection_id, 
-            collection_status: 1
+            collection_status: collection_status
         }
+        if ( $('#' + 'private_collection_checkbox_'+collection_id).is(':checked') == false ) {        
+            $('#' + 'private_collection_checkbox_' + collection_id).prop("checked", false);
+        } else {
+            $('#' + 'private_collection_checkbox_'+collection_id).prop( "checked", true );
+        }        
+        
         var ajax = new XMLHttpRequest()
         ajax.open("POST", "{% url 'private_collections' %}")
         ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
         ajax.onreadystatechange = function(response)
         {
             console.log(response, this.status, this.readyState)
+            if (this.readyState == 4 && (this.status != 200)) { 
+                if ($('#' + 'private_collection_checkbox_' + collection_id).is(':checked') == false) {
+                    $('#' + 'private_collection_checkbox_' + collection_id).prop("checked", true);
+                } else {
+                    $('#' + 'private_collection_checkbox_' + collection_id).prop("checked", false);
+                }
+            }
         }
 
         var formData = new FormData()
@@ -501,7 +512,6 @@
             formData.append(i, data[i]);
 
         ajax.send(formData)
-        }
     }
     
 

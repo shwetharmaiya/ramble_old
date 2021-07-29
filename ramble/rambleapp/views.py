@@ -471,15 +471,11 @@ def post_private_collection(request):
         collection_posts = CollectionPost.objects.filter(collection_id=collection)
         collection_user_profile = Profile.objects.get(user_id=collection.user_id)
         
-        if collection_status is 1: 
-            coll = Collection.objects.get(pk=collection_id)
-            coll.collection_status = 1
-            coll.save()
+        if collection_status: 
+            Collection.objects.filter(pk=collection.pk).update(collection_status=1)
         else: 
-            coll = Collection.objects.get(pk=collection_id)
-            coll.collection_status = 0
-            coll.save() 
-        
+            Collection.objects.filter(pk=collection.pk).update(collection_status=0)
+        collection.refresh_from_db()
         context = {'collection': collection, 'collection_posts': collection_posts, 'collector_profile': collection_user_profile}
         loggedin_user_context = twitter_user_context(request)
 

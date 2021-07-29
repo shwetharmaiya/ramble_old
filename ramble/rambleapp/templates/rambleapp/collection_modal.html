@@ -13,8 +13,13 @@
                 <img id="collection_post_({{ collection.pk }})" src="{% static 'images/collect.png' %}" width="20px"/> {{ collection.collection_name }}
 				{% endif %}
 		</button>
+		{%if collection.collection_status %} 
+		<input type="checkbox" id="private_collection_checkbox_{{collection.pk}}" name="private" onclick='click_private_collection("{{collection.pk}}")' value="Private Collection" checked>
+		<label for="private_collection_checkbox_{{collection.pk}}">Click if Private</label><br>
+		{% else %}
 		<input type="checkbox" id="private_collection_checkbox_{{collection.pk}}" name="private" onclick='click_private_collection("{{collection.pk}}")' value="Private Collection">
 		<label for="private_collection_checkbox_{{collection.pk}}">Click if Private</label><br>
+		{% endif %}
 	</div>
 	{% endfor %}
 </div>
