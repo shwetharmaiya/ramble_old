@@ -80,6 +80,7 @@ class Like(models.Model):
 class Share(models.Model):
     user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user_comment = models.CharField(max_length=10000, null=True, blank=True)
 
 
 class Comment(models.Model):

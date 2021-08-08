@@ -543,10 +543,7 @@
         <a href="{% url 'index' %}">
             <img class="headerimg" src="{% static 'images/fleuron_header_reverse_transparent.png' %}" width=300px"
                  style="margin-right:5px;margin-top:5px;background-color:#fcfcfc"/>
-    </a>
-    <div style="float: right ;padding-right: 20px; margin-top: 20px;">
-        <a href="{% url 'contact_us' %}" style="color: black;"><i class="fa fa-envelope" style="color: black;"></i> Contact</a> 
-    </div>       
+    </a>     
       
 </div>
    
@@ -629,6 +626,12 @@ background:rgba(100,100,100,0.5);">
 background:white;box-shadow:1px 1px 10px #888; border-radius:8px;overflow-y:scroll">
     </div>
 </div>
+</div>
+<div class="footer">
+    <div style="float: right ;padding-right: 20px; margin-top: 20px; position: absolute;
+ ; bottom: 0px;">
+        <a href="{% url 'contact_us' %}" style="color: black;"><i class="fa fa-envelope" style="color: black;"></i> Contact</a> 
+    </div>   
 </div>
 
 </html>

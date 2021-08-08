@@ -165,3 +165,4 @@ ACTSTREAM_SETTINGS = {
     'USE_JSONFIELD': True,
     'GFK_FETCH_DEPTH': 1,
 }
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
