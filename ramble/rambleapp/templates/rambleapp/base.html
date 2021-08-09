@@ -569,7 +569,8 @@
     {% else %}
 
   
-       <a href="{% url 'signup_in' %}"><button id="signupbtn" >Sign Up/In</button></a>
+       <a href="{% url 'signup_in' %}"><button id="signinbtn" >Sign In</button></a>
+       <a href="{% url 'signup_in' %}"><button id="signupbtn" >Get Started</button></a>
     {% endif      %}
     
          
@@ -629,7 +630,7 @@ background:white;box-shadow:1px 1px 10px #888; border-radius:8px;overflow-y:scro
 </div>
 <div class="footer">
     <div style="float: right ;padding-right: 20px; margin-top: 20px; position: absolute;
- ; bottom: 0px;">
+ ; bottom: 0px; right: 0px">
         <a href="{% url 'contact_us' %}" style="color: black;"><i class="fa fa-envelope" style="color: black;"></i> Contact</a> 
     </div>   
 </div>
