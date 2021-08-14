@@ -9,26 +9,7 @@
     src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js"
     referrerpolicy="origin">
 </script> <!-- SRM -->
-<script>
-    $( function() {
-      var availableTags = [
-        "Fiction",
-        "Action and Adventure",
-        "Crime and Mystery",
-        "Non-Fiction",
-        "Fantasy",
-        "Horror",
-        "Romance",
-        "Science Fiction",
-        "Biography",
-        "Self-help",
-        "Travel"
-      ];
-      $( "#new_ramble_tags" ).autocomplete({
-        source: availableTags
-      });
-    } );
-    </script>
+
  <style>
 body {font-family: Arial;}
 
@@ -69,241 +50,23 @@ body {font-family: Arial;}
   border-top: none;
 }
 </style>
-<script>
-    function getStats(id) 
-    {
-        var body = tinymce.get(id).getBody(), text = tinymce.trim(body.innerText || body.textContent);
-
-        return text.length
-    }
-
-    tinymce.PluginManager.add('charactercount', function (editor) 
-    {
-        var self = this;
-
-        function update() 
-        {
-            editor.theme.panel.find('#charactercount').text(['Characters: {0}', self.getCount()]);
-        }
-        editor.on('init', function () 
-        {
-            var statusbar = editor.theme.panel && editor.theme.panel.find('#statusbar')[0];
-            if (statusbar) 
-            {
-                window.setTimeout(function () 
-                {
-                    statusbar.insert({
-                        type: 'label',
-                        name: 'charactercount',
-                        text: ['Characters: {0}', self.getCount()],
-                        classes : 'charactercount',
-                        disabled: editor.settings.readonly
-                    }, 0);
-
-                    editor.on('setcontent beforeaddundo', update);
-
-                    editor.on('keyup', function (e) 
-                    {
-                        update();
-                    });
-                }, 0);
-            }
-        });
-
-        self.getCount = function () 
-        {
-            var tx = editor.getContent({ format: 'raw' });
-            var decoded = decodeHtml(tx);
-            var decodedStripped = decoded.replace(/(<([^>]+)>)/ig, "").trim();
-            var tc = decodedStripped.length;
-            return tc;
-        };
-
-        function decodeHtml(html) 
-        {
-            var txt = document.createElement("textarea");
-            txt.innerHTML = html;
-            return txt.value;
-        }
-    });
-
-    function submit_ramble()
-    {
-        num_chars = getStats('new_ramble_post')
-        if ( num_chars > 10000) {
-            alert("You have exceeded the 10,000 character limit with " + num_chars + " characters")
-            return false
-        } 
-        if (num_chars < 1000) {
-            alert("Only " + num_chars + " characters? Go on, type more. At least a 1000.")
-            return false
-        }
-
-        data = {
-            new_ramble_title: new_ramble_title.value,
-            new_ramble_post: tinyMCE.activeEditor.getContent(),
-            new_ramble_tags: new_ramble_tags.value
-        }
-
-            var ajax = new XMLHttpRequest()
-            ajax.open("POST", "ramblepost")
-            ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
-            ajax.onreadystatechange = function(response)
-            {
-                console.log(response, this.status, this.readyState)
-
-                if (this.readyState == 4) {
-                    window.location = "post/" + this.responseText
-                }
-            }
-
-            var formData = new FormData()
-            for(var i in data)
-                formData.append(i, data[i]);
-
-            ajax.send(formData)
-
-    }
-     $(document).ready(function() { 
-     $("#draft").on("click", function() { 
-        console.log("In save draft script");
-        if ( tinyMCE.activeEditor !== null ) { 
-          data = {
-              new_ramble_title: new_ramble_title.value,
-              new_ramble_post: tinyMCE.activeEditor.getContent(),
-              new_ramble_tags: new_ramble_tags.value
-          }
-        }
-       
-        $.ajax({
-            url:'save_draft',
-            headers: {'X-CSRFToken': '{{ csrf_token }}'},
-            data: data,
-            type: 'POST',
-            success: function() {
-                console.log('Saved the draft.')
-                if ( tinyMCE.activeEditor !== null) { 
-                  tinyMCE.activeEditor.setContent("");
-                }
-                $("body").load(location.href+"#body");
-            }
-        });
-    });
-     })
-</script>
-
-
-<script>
-    /* tinymce.init({
-        selector: '#new_ramble_post',
-        plugins: "link charactercount",
-        statusbar: true,
-        init_instance_callback: function (editor) 
-        {
-            $('.mce-tinymce').show('fast');
-            $(editor.getContainer()).find(".mce-path").css("display", "none");
-        }
-    }); */
-
-    if ((screen.width && screen.height) > 600) {  
-        
-    tinymce.init({
-        selector: '#new_ramble_post',
-        //plugins: "link charactercount", //SRM
-        statusbar: true,
-        menubar: true,
-        plugins: [
-      'advlist autolink autosave link image lists charmap print preview hr anchor pagebreak',
-      'searchreplace visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
-      'table emoticons template paste help wordcount'
-    ],
-    toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | ' +
-      'bullist numlist outdent indent | link image | print preview media fullpage | ' +
-      'forecolor backcolor emoticons | help ',
-    menu: {
-      favs: {title: 'My Favorites', items: 'code visualaid | searchreplace | emoticons'}
-    },
-    menubar: 'favs file edit view insert format tools table help', 
-    setup: function(editor) {
-    editor.on('init', function(e) {
-           console.log('The Editor has been initialized.');
-        });
-    },
-
-    init_instance_callback: function (editor) {
-        $(editor.getContainer()).find('button.tox-statusbar__wordcount').click();  // if you use jQuery
-        }}); 
-    }
-    else { 
-        tinymce.init({
-        selector: '#new_ramble_post',
-        
-        mobile: {
-            statusbar: true,
-            menubar: true,
-            plugins: [
-      'advlist autolink link image lists charmap print preview hr anchor pagebreak',
-      'searchreplace visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
-      'table emoticons template paste help wordcount'],
-    
-            toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | ' +
-      'bullist numlist outdent indent | link image | print preview media fullpage | ' +
-      'forecolor backcolor emoticons | help ',
-    menu: {
-      favs: {title: 'My Favorites', items: 'code visualaid | searchreplace | emoticons'}
-    },
-    menubar: 'favs file edit view insert format tools table help',
-         
-    setup: function(editor) {
-    editor.on('init', function(e) {
-           console.log('The Editor has been initialized.');
-        });
-    },
-
-    init_instance_callback: function (editor) {
-        $(editor.getContainer()).find('button.tox-statusbar__wordcount').click();  // if you use jQuery
-        }
-        }}); 
-    
-    }
-
-</script>
 
 <!--<a href="{% url 'load_draft' %}">Load Drafts</a>-->
 
-    {% csrf_token %}
-    <div style="text-align:right;padding:0 10%">
-        <input type="text" id="new_ramble_title" name="new_ramble_title" maxlength="100" placeholder="Title"
-        style="width:100%; margin-bottom:10px; font-size:24px;
-        border-width: thin;box-shadow: inset 0 0 1px 1px #888;
-        padding: 5px 10px 5px 10px; "/>
-        <textarea id="new_ramble_post" name="new_ramble_post" maxlength="10000" placeholder="Tell your story..."
-              style="width:100%;height:40vh;margin-bottom:10px"
-        ></textarea>
-        <p style='text-align:left'> Add tags for your post below, separating each tag with a comma. </p>
-        <input type="text" id="new_ramble_tags", name="new_ramble_tags" maxlength="40" placeholder="Uncategorized"
-        style="width:100%">
-        <br>
-        <button id="draft">Save Draft </button>
-        <button onclick="submit_ramble()"> Ramble </button>
-
-    </div>
-
+   
 
     <div class="tab">
         <button class="tablinks" onclick="openPost(event, 'published')">Published</button>
-        <button class="tablinks" onclick="openPost(event, 'drafts')">Drafts</button>
-        <button class="tablinks" onclick="openPost(event, 'collections')">Public Collections</button>  <!-- SRM Show Collections on TL -->
-        <button class="tablinks" onclick="openPost(event, 'private')">Private</button>
+       <!-- <button class="tablinks" onclick="openPost(event, 'drafts')">Drafts</button>
+        <button class="tablinks" onclick="openPost(event, 'collections')">Public Collections</button> 
+        <button class="tablinks" onclick="openPost(event, 'private')">Private</button> -->
     </div>
       
       <div id="published" class="tabcontent">
-            {% for post, num_likes in posts_and_likes %}
-          {% if  post.user_id.id  == request.user.id %}          
+            {% for post, num_likes in posts_and_likes %}       
             {% if amplify_posts %}
               {% include "./display_post.html" %}
             {% endif %}
-          {% endif %}
             {% endfor %}
           </div>
       

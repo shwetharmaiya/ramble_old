@@ -40,7 +40,9 @@
                 <img id="collect_{{post.pk}}" src="{% static 'images/collect_button.png' %}" width="12px" height="12px">
             {% endif %}
         </button>
-       
+        <button onclick="edit_post({{ post.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
+            <img src="{% static 'images/convertpost.png' %}" width="12px" height="12px">
+        </button>
         {% endif %}
     </div>
     <div class="post-username">

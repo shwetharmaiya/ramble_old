@@ -13,9 +13,237 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> <!-- SRM -->
     <script src="https://apis.google.com/js/platform.js" async defer></script>
 
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Ramble - Write, Read, Curate</title>
 
+    <script
+    src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js"
+    referrerpolicy="origin">
+</script>
+<script>
+    $( function() {
+      var availableTags = [
+        "Fiction",
+        "Action and Adventure",
+        "Crime and Mystery",
+        "Non-Fiction",
+        "Fantasy",
+        "Horror",
+        "Romance",
+        "Science Fiction",
+        "Biography",
+        "Self-help",
+        "Travel"
+      ];
+      $( "#new_ramble_tags" ).autocomplete({
+        source: availableTags
+      });
+    } );
+    </script>
+<script>
+    function getStats(id) 
+    {
+        var body = tinymce.get(id).getBody(), text = tinymce.trim(body.innerText || body.textContent);
+
+        return text.length
+    }
+
+    tinymce.PluginManager.add('charactercount', function (editor) 
+    {
+        var self = this;
+
+        function update() 
+        {
+            editor.theme.panel.find('#charactercount').text(['Characters: {0}', self.getCount()]);
+        }
+        editor.on('init', function () 
+        {
+            var statusbar = editor.theme.panel && editor.theme.panel.find('#statusbar')[0];
+            if (statusbar) 
+            {
+                window.setTimeout(function () 
+                {
+                    statusbar.insert({
+                        type: 'label',
+                        name: 'charactercount',
+                        text: ['Characters: {0}', self.getCount()],
+                        classes : 'charactercount',
+                        disabled: editor.settings.readonly
+                    }, 0);
+
+                    editor.on('setcontent beforeaddundo', update);
+
+                    editor.on('keyup', function (e) 
+                    {
+                        update();
+                    });
+                }, 0);
+            }
+        });
+
+        self.getCount = function () 
+        {
+            var tx = editor.getContent({ format: 'raw' });
+            var decoded = decodeHtml(tx);
+            var decodedStripped = decoded.replace(/(<([^>]+)>)/ig, "").trim();
+            var tc = decodedStripped.length;
+            return tc;
+        };
+
+        function decodeHtml(html) 
+        {
+            var txt = document.createElement("textarea");
+            txt.innerHTML = html;
+            return txt.value;
+        }
+    });
+
+    function submit_ramble()
+    {
+        num_chars = getStats('new_ramble_post')
+        if ( num_chars > 10000) {
+            alert("You have exceeded the 10,000 character limit with " + num_chars + " characters")
+            return false
+        } 
+        if (num_chars < 1000) {
+            alert("Only " + num_chars + " characters? Go on, type more. At least a 1000.")
+            return false
+        }
+
+        data = {
+            new_ramble_title: new_ramble_title.value,
+            new_ramble_post: tinyMCE.activeEditor.getContent(),
+            new_ramble_tags: new_ramble_tags.value
+        }
+
+            var ajax = new XMLHttpRequest()
+            ajax.open("POST", "ramblepost")
+            ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+            ajax.onreadystatechange = function(response)
+            {
+                console.log(response, this.status, this.readyState)
+
+                if (this.readyState == 4) {
+                    window.location = "post/" + this.responseText
+                }
+            }
+
+            var formData = new FormData()
+            for(var i in data)
+                formData.append(i, data[i]);
+
+            ajax.send(formData)
+
+    }
+     $(document).ready(function() { 
+     $("#draft").on("click", function() { 
+        console.log("In save draft script");
+        if ( tinyMCE.activeEditor !== null ) { 
+          data = {
+              new_ramble_title: new_ramble_title.value,
+              new_ramble_post: tinyMCE.activeEditor.getContent(),
+              new_ramble_tags: new_ramble_tags.value
+          }
+        }
+       
+        $.ajax({
+            url:'save_draft',
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: data,
+            type: 'POST',
+            success: function() {
+                console.log('Saved the draft.')
+                if ( tinyMCE.activeEditor !== null) { 
+                  tinyMCE.activeEditor.setContent("");
+                }
+                $("body").load(location.href+"#body");
+            }
+        });
+    });
+     })
+</script>
+
+
+<script>
+    /* tinymce.init({
+        selector: '#new_ramble_post',
+        plugins: "link charactercount",
+        statusbar: true,
+        init_instance_callback: function (editor) 
+        {
+            $('.mce-tinymce').show('fast');
+            $(editor.getContainer()).find(".mce-path").css("display", "none");
+        }
+    }); */
+
+    if ((screen.width && screen.height) > 600) {  
+        
+    tinymce.init({
+        selector: '#new_ramble_post',
+        //plugins: "link charactercount", //SRM
+        statusbar: true,
+        menubar: true,
+        max_height: 150,
+        max_width: 50,
+        plugins: [
+      'advlist autolink autosave link image lists charmap print preview hr anchor pagebreak',
+      'searchreplace visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
+      'table emoticons template paste help wordcount'
+    ],
+    toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | ' +
+      'bullist numlist outdent indent | link image | print preview media fullpage | ' +
+      'forecolor backcolor emoticons | help ',
+    toolbar_mode: 'floating',
+    menu: {
+      favs: {title: 'My Favorites', items: 'code visualaid | searchreplace | emoticons'}
+    },
+    menubar: 'favs file edit view insert format tools table help', 
+    setup: function(editor) {
+    editor.on('init', function(e) {
+           console.log('The Editor has been initialized.');
+        });
+    },
+
+    init_instance_callback: function (editor) {
+        $(editor.getContainer()).find('button.tox-statusbar__wordcount').click();  // if you use jQuery
+        }}); 
+    }
+    else { 
+        tinymce.init({
+        selector: '#new_ramble_post',
+        
+        mobile: {
+            statusbar: true,
+            menubar: true,
+            plugins: [
+      'advlist autolink link image lists charmap print preview hr anchor pagebreak',
+      'searchreplace visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
+      'table emoticons template paste help wordcount'],
+    
+            toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | ' +
+      'bullist numlist outdent indent | link image | print preview media fullpage | ' +
+      'forecolor backcolor emoticons | help ',
+    menu: {
+      favs: {title: 'My Favorites', items: 'code visualaid | searchreplace | emoticons'}
+    },
+    menubar: 'favs file edit view insert format tools table help',
+         
+    setup: function(editor) {
+    editor.on('init', function(e) {
+           console.log('The Editor has been initialized.');
+        });
+    },
+
+    init_instance_callback: function (editor) {
+        $(editor.getContainer()).find('button.tox-statusbar__wordcount').click();  // if you use jQuery
+        }
+        }}); 
+    
+    }
+
+</script>
 
     <script>
     function delete_post(post_id)
@@ -152,6 +380,28 @@
         ajax.send(formData)
 
     }
+    function edit_post(post_id) {
+        console.log("In edit post ")
+
+        tinymce.init({
+            selector: "#new_ramble_post",
+            setup: function (editor) {
+                editor.on('init', function (e) {
+                    console.log("In edit post before ajax_get")
+                    ajax_get("{% url 'get_post' 123456 %}".replace('123456', post_id), true, function (responseText) {
+                        //var resultText = JSON.parse(this.responseText);
+                        console.log(responseText)
+                        editor.setContent(responseText);
+                        // tinymce.get('new_ramble_title').setContent(responseText.post_title);
+
+                    })
+                    console.log("In edit post after  ajax_get")
+                });
+
+            }
+        });
+    }
+    
     function hide_post(post_id)
     {
         var hide_div = document.getElementById("hide_"+post_id);
@@ -609,12 +859,34 @@
         </tr>
     </table> -->
 </div>
+
 <div class="container, m-5" >
+    {% csrf_token %}
+    <div style="text-align:right;padding:0 10%">
+        <input type="text" id="new_ramble_title" name="new_ramble_title" maxlength="100" placeholder="Title"
+        style="width:100%; margin-bottom:10px; font-size:24px;
+        border-width: thin;box-shadow: inset 0 0 1px 1px #888;
+        padding: 5px 10px 5px 10px; "/>
+        <textarea id="new_ramble_post" name="new_ramble_post" maxlength="10000" placeholder="Tell your story..."
+              style="width:100%;height:40vh;margin-bottom:10px"
+        ></textarea>
+        <p style='text-align:left'> Add tags for your post below, separating each tag with a comma. </p>
+        <input type="text" id="new_ramble_tags", name="new_ramble_tags" maxlength="40" placeholder="Uncategorized"
+        style="width:100%">
+        <br>
+        <button id="draft">Save Draft </button>
+        <button onclick="submit_ramble()"> Ramble </button>
+    
+    </div>
 {% block postman_menu %}
 {% endblock %}
 {% block content %}
+
 {% endblock %}
+
 </div>
+
+
 <div class="container" id=modalLikes onclick="if (event.target==this) {this.style.display='none'}" style="display:none;position:fixed;top:0;height:100vh;left:0;width:100vw;
 background:rgba(100,100,100,0.5);">
     <div id=modalLikesInner style="position:fixed;top:30vh;height:40vh;left:30vw;width:40vw;
@@ -629,7 +901,7 @@ background:white;box-shadow:1px 1px 10px #888; border-radius:8px;overflow-y:scro
 </div>
 </div>
 <div class="footer">
-    <div style="float: right ;padding-right: 20px; margin-top: 20px; position: absolute;
+    <div style="float: right ;padding-right: 20px; margin-top: 20px; position: relative;
  ; bottom: 0px; right: 0px">
         <a href="{% url 'contact_us' %}" style="color: black;"><i class="fa fa-envelope" style="color: black;"></i> Contact</a> 
     </div>   

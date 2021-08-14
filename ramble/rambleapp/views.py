@@ -26,6 +26,8 @@ from backports.pbkdf2 import pbkdf2_hmac
 #from .AESCipher import *
 from simple_aes_cipher import AESCipher, generate_secret_key
 
+from json.encoder import JSONEncoder #json encode for sending json to edit post
+    
 # Pages
 
 def landing_page(request):
@@ -402,6 +404,18 @@ def get_ramblepost(request, post_id):
     template = loader.get_template('rambleapp/post.html')
     return HttpResponse(template.render(total_context, request))
 
+def get_post(request, post_id):
+    try:
+        post = Post.objects.get(pk=post_id, status=1)
+        context = {'post': post}
+
+    except Post.DoesNotExist:
+        post = None
+        context = {}
+        
+    return HttpResponse(post.post_text)
+    #return HttpResponse(JSONEncoder().encode(context))
+    
 def get_rambledraft(request, draft_id):
     try:
         draft = Post.objects.get(pk=draft_id, status=0)
@@ -751,8 +765,9 @@ def delete_comment(request):
         return HttpResponse(status=204)
     else:
         return HttpResponse(status=400)
-
-
+@login_required
+def edit_post(request):
+    return HttpResponse(status=204)
 @login_required
 def like_post(request):
     user_id = request.user.id
