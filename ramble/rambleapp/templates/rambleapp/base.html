@@ -859,7 +859,7 @@
         </tr>
     </table> -->
 </div>
-
+{% if user.is_authenticated %}
 <div class="container, m-5" >
     {% csrf_token %}
     <div style="text-align:right;padding:0 10%">
@@ -885,7 +885,7 @@
 {% endblock %}
 
 </div>
-
+{% endif %}
 
 <div class="container" id=modalLikes onclick="if (event.target==this) {this.style.display='none'}" style="display:none;position:fixed;top:0;height:100vh;left:0;width:100vw;
 background:rgba(100,100,100,0.5);">
