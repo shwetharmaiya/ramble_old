@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- SRM -->
+
+    <link rel="stylesheet" href="{% static 'css/signup_in_styles.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> <!-- SRM -->
+
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/fleuron_transparent_icon.ico' %}" />
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> <!-- SRM -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        // Imports
+        @import url('http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css');
+
+        .container {
+            padding: 2rem 0rem;
+        }
+
+        @media (min-width: 576px) {
+            .modal-dialog {
+                max-width: 400px;
+
+                .modal-content {
+                    padding: 1rem;
+                }
+            }
+        }
+
+        .modal-header {
+            .close {
+                margin-top: -1.5rem;
+            }
+        }
+
+        .form-title {
+            margin: -2rem 0rem 2rem;
+        }
+
+        .btn-round {
+            border-radius: 3rem;
+        }
+
+        .delimiter {
+            padding: 1rem;
+        }
+
+        .social-buttons {
+            .btn {
+                margin: 0 0.5rem 1rem;
+            }
+        }
+
+        .signup-section {
+            padding: 0.3rem 0rem;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $('#loginModal').modal('show');
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
+        });
+    </script>
+</head>
+<div class="container">
+    <button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#loginModal">
+        Signup
+    </button>
+</div>
+
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column text-center">
+                    <form name="signupform" action="{% url 'post_signup' %}" method="POST">
+                        {% csrf_token %} 
+                        <div class="form-group">
+                            <label for="username">Username</label><br/><br/>
+                            <input class="form-control" id="username" type="text" name="username" placeholder="" required="" />
+                          </div>
+                          
+                          <div class="form-group">
+                            <label for="email">Email</label><br/><br/>
+                            <input class="form-control" id="email" type="email" name="email" placeholder="" required="" />
+                          </div>
+                          <div class="form-group">
+                            <label for="psw">Password</label><br/><br/>
+                            <input class="form-control" id="password" type="password" name="psw" placeholder="" required="" />
+                          </div>
+                          <div class="form-group">
+                            <label for="psw-repeat">Repeat Password</label><br/><br/>
+                            <input class="form-control" id="passwordRepeat" type="password" name="psw-repeat" placeholder="" required="" />
+                          </div>
+                          <div>
+                          <button style = "border:0px; margin-top:8%; 
+                          height:35px; width:80%;margin-left:19%;" class="btn btn-info btn-block btn-round" type = "submit" 
+                               value = "Register" >
+                               <strong>Register</strong>
+                         </button>
+                         </div>
+                    </form>
+                   
+                    <div class="modal-footer d-flex justify-content-center">
+                        <div class="signup-section">Already have an account?<a href="{% url 'signin' %}" class="text-info">Sign in</a></div>
+                    </div>
+                </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

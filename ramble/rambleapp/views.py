@@ -40,9 +40,15 @@ def contact_us(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
-def signup_in(request):
+def signin(request):
     if request.method=='GET':
-        template = loader.get_template('rambleapp/signup_in.html')
+        template = loader.get_template('rambleapp/signin.html')
+        context = {}
+        return HttpResponse(template.render(context, request))
+
+def signup(request):
+    if request.method=='GET':
+        template = loader.get_template('rambleapp/signup.html')
         context = {}
         return HttpResponse(template.render(context, request))
     
