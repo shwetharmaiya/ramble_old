@@ -381,21 +381,15 @@
 
     }
     function edit_post(post_id) {
-        console.log("In edit post ")
-
         tinymce.init({
             selector: "#new_ramble_post",
             setup: function (editor) {
                 editor.on('init', function (e) {
-                    console.log("In edit post before ajax_get")
                     ajax_get("{% url 'get_post' 123456 %}".replace('123456', post_id), true, function (responseText) {
-                        //var resultText = JSON.parse(this.responseText);
-                        console.log(responseText)
-                        editor.setContent(responseText);
-                        // tinymce.get('new_ramble_title').setContent(responseText.post_title);
-
+                        var jsonstr = JSON.parse(responseText)
+                        editor.setContent(jsonstr.text);
+                        document.getElementById("new_ramble_title").value=jsonstr.title
                     })
-                    console.log("In edit post after  ajax_get")
                 });
 
             }
