@@ -97,5 +97,11 @@ class Follow(models.Model):
     follower_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE, related_name="followee_id")
     followee_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE, related_name="follower_id")
 
+class Photo(models.Model):
+    file = models.ImageField()
+    description = models.CharField(max_length=255, blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
 
-
+    class Meta:
+        verbose_name = 'photo'
+        verbose_name_plural = 'photos'
