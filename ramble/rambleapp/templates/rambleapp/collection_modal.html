@@ -1,11 +1,14 @@
 {% load static %}
 
-<div style='padding:20px'>
-    	<img src="{% static 'images/follow.png' %}" width="20px"/> <input type=text id="new_collection" placeholder="Add new collection" onkeypress="keypressed_collect(event)"> 
+<div style="padding: 20px;">
+    Save To....
 </div>
-<div id='all_collections'>
+<hr>
+<div id='all_collections' style="padding-left: 15px;">
 	{% for collection  in collections %}
 	<div id="each_collection_{{collection.pk}}">
+		<ul style="list-style-type: none;padding-top: 2px;">
+			<li style="padding-bottom: 10px;">
 		<button id="collection_{{collection.pk}}" onclick='post_to_collection("{{collection.pk}}", "{{post_id}}")'>
 			{% if relevant_collections and collection.pk in relevant_collections %}
                 <img id="collection_post_({{ collection.pk }})" src="{% static 'images/collected.png' %}" width="12px" height="12px"> {{ collection.collection_name }}
@@ -13,6 +16,8 @@
                 <img id="collection_post_({{ collection.pk }})" src="{% static 'images/collect.png' %}" width="20px"/> {{ collection.collection_name }}
 				{% endif %}
 		</button>
+	</li>
+	</ul>
 		{%if collection.collection_status %} 
 		<input type="checkbox" id="private_collection_checkbox_{{collection.pk}}" name="private" onclick='click_private_collection("{{collection.pk}}")' value="Private Collection" checked>
 		<label for="private_collection_checkbox_{{collection.pk}}">Click if Private</label><br>
@@ -21,5 +26,10 @@
 		<label for="private_collection_checkbox_{{collection.pk}}">Click if Private</label><br>
 		{% endif %}
 	</div>
+
 	{% endfor %}
+	<hr>
+	<div style='padding:20px; display: flex;justify-content: space-between;'>
+    	<img src="{% static 'images/follow.png' %}" width="20px"/> <input type=text id="new_collection" placeholder="Add new collection" onkeypress="keypressed_collect(event)">
+	</div>
 </div>
