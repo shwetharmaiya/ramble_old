@@ -55,20 +55,20 @@ body {font-family: Arial;}
 
    
 
-    <div class="tab">
-        <button class="tablinks" onclick="openPost(event, 'published')">Published</button>
-       <!-- <button class="tablinks" onclick="openPost(event, 'drafts')">Drafts</button>
+    <!--<div class="tab">
+      <button class="tablinks" onclick="openPost(event, 'published')">Published</button>
+        <button class="tablinks" onclick="openPost(event, 'drafts')">Drafts</button>
         <button class="tablinks" onclick="openPost(event, 'collections')">Public Collections</button> 
-        <button class="tablinks" onclick="openPost(event, 'private')">Private</button> -->
-    </div>
+        <button class="tablinks" onclick="openPost(event, 'private')">Private</button>
+    </div>-->
       
-      <div id="published" class="tabcontent">
+      <!-- <div id="published" class="tabcontent">-->
             {% for post, num_likes in posts_and_likes %}       
             {% if amplify_posts %}
               {% include "./display_post.html" %}
             {% endif %}
             {% endfor %}
-          </div>
+          <!-- </div> -->
       
       <div id="drafts" class="tabcontent">
         {% for draft, num_likes in drafts_and_likes %}

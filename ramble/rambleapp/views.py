@@ -212,8 +212,15 @@ def make_profile(request):
         if form.is_valid():  
             new_profile = form.save(commit=False)
             new_profile.user_id = user
+            pic = request.FILES.get('id_profile_pic', False)
+            if pic != False:
+                new_profile.profile_pic = pic
+            else: 
+                new_profile.profile_pic = "profilepix/default_dog.jpg"
             new_profile.save()
             return redirect(index)
+        else:
+            return redirect(make_profile)            
     else:
         form = ProfileForm(instance=profile)
         context = { 'form' : form }

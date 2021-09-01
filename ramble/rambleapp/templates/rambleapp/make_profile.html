@@ -59,23 +59,19 @@
       });
 
     });
-    function upload_img(input) {
-  if (input.files && input.files[0]) {
-    var src = URL.createObjectURL(input.files[0])
-    $('#img_id').attr('src', src)
-  }
-}
-    function selectProfilePic() {
-    let input = document.createElement('input');
-    input.type = 'file';
-    input.onchange = _ => {
-      // you can use this method to get file and perform respective operations
-              let files =   Array.from(input.files);
-              console.log(files);
-          };
-    input.click();
-    
-  }
+
+    window.onload = function () {
+        console.log("Initial")
+        var fileupload = document.getElementById("id_profile_pic");
+        var image = document.getElementById("img_profile_pic");
+        const reader = new FileReader();
+        image.onclick = function () {
+            fileupload.click();
+        };
+        fileupload.onchange = function () {
+            image.src = URL.createObjectURL(event.target.files[0]);
+        };
+    };
 </script>
 
 {% endblock %}
@@ -123,15 +119,19 @@
             {% csrf_token %}
             <table>
               <tbody style="white-space: nowrap;"> 
-              <tr style="margin-bottom: 10px;"><th><label for="id_full_name">Full name:</label></th><td style="padding-bottom: 20px;"><input type="text" name="full_name" maxlength="50" required id="id_full_name"></td></tr>
-              <tr><th><label for="id_bio">Bio:</label></th><td style="padding-bottom: 20px;"><textarea name="bio" maxlength="500" required id="id_bio"></textarea></td></tr>                    
-              </tbody>
+              <tr style="margin-bottom: 10px;"><th><label for="id_full_name">Full name:</label></th><td style="padding-bottom: 20px;"><input type="text" name="full_name" maxlength="50" required id="id_full_name"  {% if form.full_name.value != None %}value="{{ form.full_name.value|stringformat:'s' }}"{% endif %} /></td></tr>
+              <tr><th><label for="id_bio">Bio:</label></th><td style="padding-bottom: 20px;"><input type="text" name="bio" maxlength="500" required id="id_bio" {% if form.bio.value != None %}value="{{ form.bio.value|stringformat:'s' }}"{% endif %} /></td></tr>                    
+    
+             <tr>
+               <th style="text-align: left;"></th>
+              <td style="padding-bottom: 20px;text-align: left;" >
+                <img id="img_profile_pic"  src="{{form.instance.profile_pic.url}}" style="border-radius: 50%; cursor: pointer" alt="Your Image" width="150" height="150">
+                <input type="file" name="id_profile_pic" id="id_profile_pic" {% if form.profile_pic.value != None %} value="{{ form.profile_pic.value }}"{% endif %} style="display:none;" accept="image/*" />
+                </td>
+              </tr>
+            </tbody>
+            
             </table>
-              <div class="container">
-                <img src="/media/default_dog.jpg" style="border-radius: 50%" alt="Your Image">
-                <button onclick="selectProfilePic()" class="btn">Profile Pic</button>
-              </div>
-             
             <button type="submit">Ready To Ramble</button>
         </form>
     </div></div>
