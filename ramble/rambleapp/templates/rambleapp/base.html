@@ -791,16 +791,18 @@
             <img class="headerimg" src="{% static 'images/fleuron_header_reverse_transparent.png' %}" width=300px"
                  style="margin-right:5px;margin-top:5px;background-color:#fcfcfc"/>
     </a>     
-      
+    {% if user.username %}
+    <div style="text-align:right; font-size:small">
+        <form method="POST" action="{% url 'search_results' %}">
+            {% csrf_token %}
+            <input class="search" type="text" name="search_ramble" placeholder="Search Ramble">
+        </form>
+    </div>
+    {% endif %}
 </div>
    
-    <div style="float: right;">
+    <div style="float: right; font-size: small;">
         {% if user.username %}
-        <div style="text-align:right; font-size:small">
-            <form method="POST" action="{% url 'search_results' %}">
-                {% csrf_token %}
-                <input class="search" type="text" name="search_ramble" placeholder="Search Ramble">
-            </form>
             <p>
         {% if user_profile.full_name %}
                     Hello <a href="../u/{{ user.id }}"> {{ user_profile.full_name }}! </a>
