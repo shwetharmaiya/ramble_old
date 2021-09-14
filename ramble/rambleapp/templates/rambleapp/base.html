@@ -393,6 +393,7 @@
                         var jsonstr = JSON.parse(responseText)
                         editor.setContent(jsonstr.text);
                         document.getElementById("new_ramble_title").value=jsonstr.title
+                        document.getElementById("new_ramble_tags").value=jsonstr.tags
                     })
                 });
 

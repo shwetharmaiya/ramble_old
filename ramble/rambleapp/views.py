@@ -420,14 +420,14 @@ def get_ramblepost(request, post_id):
 def get_post(request, post_id):
     try:
         post = Post.objects.get(pk=post_id, status=1)
-        context = {'text': post.post_text, 'title': post.post_title}
-       
+        tag_names = list(post.tags.names())
+        context = {'text': post.post_text, 'title': post.post_title , 'tags': tag_names } 
+
     except Post.DoesNotExist:
         post = None
         context = {}
         
     return HttpResponse(json.dumps(context), content_type="application/json")
-    #return HttpResponse(JSONEncoder().encode(context))
     
 def get_rambledraft(request, draft_id):
     try:
