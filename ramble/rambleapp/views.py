@@ -553,6 +553,9 @@ def likes_get(request, post_id):
 def login(request):
     user = request.POST.get ('user', False)
     pswd = request.POST.get('pswd', False)
+    if request.user.is_authenticated: 
+        if request.user.is_active: 
+            return redirect("index")
     # Salted password SRM
     size = 10
     salt = os.urandom(size)
