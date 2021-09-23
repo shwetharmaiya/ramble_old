@@ -809,12 +809,14 @@ def like_post(request):
         # if not present, add new row with user id and post id
         new_like = Like(user_id=user, post_id=post)
         new_like.save()
-        return HttpResponse(status=204)
+        context = { 'num_likes' : len(Like.objects.filter(post_id=post_id))} 
+        action.send(request.user, verb='liked the content of', action_object=post, target= post.user_id)
+        return HttpResponse(json.dumps(context), content_type="application/json", status=200)
 
-    action.send(request.user, verb='liked the content of', action_object=post, target= post.user_id)
     # if present, delete row
     like.delete()
-    return HttpResponse(status=204)
+    context = { 'num_likes' : len(Like.objects.filter(post_id=post_id)) } 
+    return HttpResponse(json.dumps(context), content_type="application/json", status=200)
 
 
 @login_required

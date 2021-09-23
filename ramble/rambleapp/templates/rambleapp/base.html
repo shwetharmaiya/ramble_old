@@ -354,7 +354,7 @@
 
     function like_post(post_id)
     {
-        var post_div = document.getElementById("post_"+post_id);
+        var like_div = document.getElementById("like_"+post_id);
         if (document.getElementById("like_"+post_id).src.endsWith("{% static 'images/liked_button.png' %}"))
         {
             console.log("unliking...");
@@ -368,13 +368,61 @@
         data = {
             post_id: post_id,
         }
-        var ajax = new XMLHttpRequest()
+        var token = '{{csrf_token}}';
+
+        ajaxCall();
+       
+
+function ajaxCall() {
+   $.ajax({url:"{% url 'like_a_ramble' %}",
+           type:"POST",
+           data: {post_id: post_id},
+           headers: { "X-CSRFToken": token },
+           success:function(result){
+             if(result.num_likes==0) { 
+                alert(result.num_likes);
+                $("#like_count").hide();
+             } else { 
+                alert(result.num_likes)
+                $('#like_count').html(result.num_likes).show();  
+             }
+            }
+        });
+ }
+
+
+      /*  var ajax = new XMLHttpRequest()
         ajax.open("POST", "{% url 'like_a_ramble' %}")
         ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
-        ajax.onreadystatechange = function(response)
+        ajax.onreadystatechange = function(responseText)
         {
-            console.log(response, this.status, this.readyState);
-            $('#like_count').load(document.URL +  ' #like_count');
+            console.log(responseText, this.status, this.readyState);
+            if (this.status == 200 && this.readyState == 4 ) { 
+                var jsonstr= JSON.parse(responseText.currentTarget.responseText)
+                //alert(jsonstr.num_likes)
+                //$('#like_count').attr("text", jsonstr.num_likes);
+                $('#like_count').text(jsonstr.num_likes);
+                if (jsonstr.num_likes > 0){  
+                    $("#like_count").show();
+                } else { 
+                    alert("IN less than 0 : ")
+                    alert(jsonstr.num_likes)
+                
+                    $("#like_count").hide();         
+                }
+                $.get(location.href).then(function(page) {
+                    post_title_id = "#" + "post_title_id_{{post_id}}"
+                    $(post_title_id).html($(page).find(post_title_id).html())
+                })
+                $.get(location.href).then(function(page) {
+                    $("#like_count").html($(page).find("#like_count").html())
+                })
+
+                document.getElementById("like_count").innerHTML = jsonstr.num_likes;
+                
+                //$("#like_count").load(location.href+" #like_count>*","");
+                //$("#like_count").load("{% url 'index' %}");
+           }
         }
 
         var formData = new FormData()
@@ -382,7 +430,7 @@
             formData.append(i, data[i]);
 
         ajax.send(formData)
-
+*/
     }
     function edit_post(post_id) {
         tinymce.init({
@@ -882,13 +930,13 @@
 {% if user.is_authenticated %}
 <div class="container, m-5" >
     {% csrf_token %}
-    <div style="text-align:right;padding:0 10%">
+    <div id="texteditor" style="text-align:right;padding:0 10%;">
         <input type="text" id="new_ramble_title" name="new_ramble_title" maxlength="100" placeholder="Title"
         style="width:100%; margin-bottom:10px; font-size:24px;
         border-width: thin;box-shadow: inset 0 0 1px 1px #888;
         padding: 5px 10px 5px 10px; "/>
         <textarea id="new_ramble_post" name="new_ramble_post" maxlength="10000" placeholder="Tell your story..."
-              style="width:100%;height:40vh;margin-bottom:10px"
+              style="width:100%;height:40vh;margin-bottom:10px;"
         ></textarea>
         <p style='text-align:left'> Add tags for your post below, separating each tag with a comma. </p>
         <input type="text" id="new_ramble_tags", name="new_ramble_tags" maxlength="40" placeholder="Uncategorized"
