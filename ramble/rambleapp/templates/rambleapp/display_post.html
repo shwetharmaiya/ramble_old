@@ -6,11 +6,7 @@
             document.getElementById("post_{{post.pk}}").style.display = "none";
         </script>
         {% endif %}
-{% endfor %}        
-     
-<script>
-    document.getElementById("texteditor").style.display = "none";
-</script>
+{% endfor %}
 
 <div id="post_{{post.pk}}" style="transition:all 1s ease" class="post">
     <div id="post_title_id_{{post.pk}}" class="post-title">

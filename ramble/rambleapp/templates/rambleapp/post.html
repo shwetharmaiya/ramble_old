@@ -2,12 +2,16 @@
 {% block content %}
 {% load static %}
 {% if post %}
+<script>
+    document.getElementById("texteditor").style.display = "none";
+</script>
     {% include "./display_post.html" %}
 {% elif draft %}
     {% include "./display_draft.html" %}
 {% else %}
     <p> 404 Post not found </p>
 {% endif %}
+
 
 {% if comments_and_profiles %}
 	{% for comment, profile in comments_and_profiles %}
