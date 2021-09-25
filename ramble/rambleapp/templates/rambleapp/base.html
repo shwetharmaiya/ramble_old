@@ -26,6 +26,18 @@
     src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js"
     referrerpolicy="origin">
 </script>
+<style> 
+
+#displaytmce { 
+    float: right;
+    padding-right: 20px;
+    margin-right: 10px;
+    margin-top: 20px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+ }
+</style>
 <script>
     $( function() {
       var availableTags = [
@@ -168,7 +180,11 @@
     });
      })
 </script>
-
+<script>
+    function displayTinymce() { 
+      document.getElementById("texteditor").style.display = "block";
+    }
+</script>
 
 <script>
     /* tinymce.init({

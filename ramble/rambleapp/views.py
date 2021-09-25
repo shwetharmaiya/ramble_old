@@ -59,7 +59,7 @@ def post_signup(request):
         password = request.POST["psw"]
         confirmation = request.POST["psw-repeat"]
         if password != confirmation:
-            return render(request, "rambleapp/signup_in.html", {
+            return render(request, "rambleapp/signup.html", {
                 "message": "Passwords must match."
             })
         # Salted password SRM
@@ -96,7 +96,7 @@ def post_signup(request):
             user.save()
         except IntegrityError as e:
             print(e)
-            return render(request, "rambleapp/signup_in.html", {
+            return render(request, "rambleapp/signup.html", {
                 "message": "Email address already taken."
             })
         user = authenticate(request, username=username, password=encrypt_text) #Salted password SRM
