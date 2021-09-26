@@ -368,43 +368,41 @@
 
     }
 
-    function like_post(post_id)
-    {
-        var like_div = document.getElementById("like_"+post_id);
-        if (document.getElementById("like_"+post_id).src.endsWith("{% static 'images/liked_button.png' %}"))
-        {
-            console.log("unliking...");
-            document.getElementById("like_"+post_id).src = "{% static 'images/like_button.png' %}";
-        }
-        else
-        {
-            document.getElementById("like_"+post_id).src = "{% static 'images/liked_button.png' %}";
-        }
-
-        data = {
-            post_id: post_id,
-        }
-        var token = '{{csrf_token}}';
-
-        ajaxCall();
-       
-
-function ajaxCall() {
-   $.ajax({url:"{% url 'like_a_ramble' %}",
-           type:"POST",
-           data: {post_id: post_id},
-           headers: { "X-CSRFToken": token },
-           success:function(result){
-             if(result.num_likes==0) { 
-                alert(result.num_likes);
-                $("#like_count").hide();
-             } else { 
-                alert(result.num_likes)
-                $('#like_count').html(result.num_likes).show();  
-             }
+    function like_post(post_id) {
+            var like_div = document.getElementById("like_" + post_id);
+            if (document.getElementById("like_" + post_id).src.endsWith("{% static 'images/liked_button.png' %}")) {
+                console.log("unliking...");
+                document.getElementById("like_" + post_id).src = "{% static 'images/like_button.png' %}";
             }
-        });
- }
+            else {
+                document.getElementById("like_" + post_id).src = "{% static 'images/liked_button.png' %}";
+            }
+
+            data = {
+                post_id: post_id,
+            }
+            var token = '{{csrf_token}}';
+
+            ajaxCall();
+
+
+            function ajaxCall() {
+                like_count_id = document.getElementById("like_count_" + post_id);
+
+                $.ajax({
+                    url: "{% url 'like_a_ramble' %}",
+                    type: "POST",
+                    data: { post_id: post_id },
+                    headers: { "X-CSRFToken": token },
+                    success: function (result) {
+                        if (result.num_likes == 0) {
+                            $('#' + like_count_id.id).hide();
+                        } else {
+                            $('#' + like_count_id.id).html(result.num_likes).show();
+                        }
+                    }
+                });
+            }
 
 
       /*  var ajax = new XMLHttpRequest()
@@ -559,7 +557,7 @@ function ajaxCall() {
         ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
         ajax.onreadystatechange = function (response) {
             console.log(response, this.status, this.readyState);
-            if (this.status != 204 || this.status !=200) {
+            if (response.currentTarget.response!=204 && this.status!=200) {
                 if (document.getElementById("useradd_" + user_id).src.endsWith("{% static 'images/follow.png' %}")) {
                     console.log("unfollowing...");
                     imagePath.attr('src', imagePath.attr('src').replace("{% static 'images/follow.png' %}", "{% static 'images/follows.png' %}"));

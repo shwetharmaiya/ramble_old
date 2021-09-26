@@ -31,9 +31,9 @@
             {% endif %}
         </button>
         {% if num_likes > 0 %}
-            <a id="like_count" href='javascript:void(0)' onclick="openModalLikes({{post.pk}})">{{ num_likes }} </a>
+            <a id="like_count_{{post.pk}}" href='javascript:void(0)' onclick="openModalLikes({{post.pk}})">{{ num_likes }} </a>
         {% else %}
-            <a id="like_count" href='javascript:void(0)' onclick="openModalLikes({{post.pk}}) style="display:none;">{{num_likes}}</a>
+            <a id="like_count_{{post.pk}}" href='javascript:void(0)' onclick="openModalLikes({{post.pk}}) style="display:none;">{{num_likes}}</a>
         {% endif %}
         <button onclick="collect_post({{ post.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
             {% if user_collected_posts and post.pk in user_collected_posts %}
