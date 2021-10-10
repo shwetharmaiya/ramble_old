@@ -148,8 +148,7 @@ def index(request):
     amplify_posts = [(post, Post.objects.filter(status=1).values('amplify_count')) for post in posts]
     
     drafts_and_likes = [(draft, len(Like.objects.filter(post_id=draft))) for draft in drafts]
-    hide_posts = [(HidePost.objects.filter(post_id=post, hide_status=1)) for post in posts]
-
+    user_hide_posts = list(set([hide_post.post_id.id for hide_post in HidePost.objects.filter(hide_status=0)]))
     user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
     user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
     collection_posts = [post.post_id.pk for post in CollectionPost.objects.filter(collection_id__user_id=user)]
@@ -169,11 +168,11 @@ def index(request):
     context = {'posts': posts, 'user_liked_posts': user_liked_posts,
                'user_followers': user_followers, 'user_profile': user_profile,
                'posts_and_likes': posts_and_likes, 'user_collected_posts': collection_posts,
-               'drafts': drafts, 'drafts_and_likes': drafts_and_likes, 'hide_posts':hide_posts, 
+               'drafts': drafts, 'drafts_and_likes': drafts_and_likes, 
                'amplify_posts': amplify_posts, "all_collections": all_collections ,
                'all_collection_posts': all_collection_posts, 
                'private_collections' : private_collections,
-               'all_private_collection_posts' : all_private_collection_posts }
+               'all_private_collection_posts' : all_private_collection_posts, 'user_hide_posts': user_hide_posts }
     #SRM Show Collections on TL
     return HttpResponse(template.render(context, request))
 
@@ -745,19 +744,28 @@ def delete_post(request):
 def hide_post(request):
     user = Auth_User.objects.get(pk=request.user.id)
     post_id = request.POST.get('post_id', False)
+    h_status = request.POST.get('h_status')
     if post_id is not False:
-        post = Post.objects.get(pk=post_id, status = 1 )
+        post = Post.objects.get(pk=post_id)
     if not post:
         return HttpResponse(status=400)
     
     try:
-        hide_post = HidePost.objects.get(post_id=post, hide_status=1)    
+        hide_post = HidePost.objects.get(post_id=post)
+        hide_post.hide_status = h_status
+        hide_status = h_status
+        if hide_post.hide_status is None: 
+            hide_post.hide_status = 0
+        hide_post.save()
     except: 
         hide_post = HidePost(post_id=post, hide_status=1)
+        hide_post.hide_status = 1
         hide_post.save()
-        return HttpResponse(status=204)
-    
-    return HttpResponse(status=204)
+        context = { 'hide_status' : hide_post.hide_status } 
+        return HttpResponse(json.dumps(context), content_type="application/json", status=200)
+
+    context = { 'hide_status' : hide_post.hide_status } 
+    return HttpResponse(json.dumps(context), content_type="application/json", status=200)    
 
 @login_required
 def convert_post(request):

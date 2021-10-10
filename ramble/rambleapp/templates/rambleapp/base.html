@@ -62,7 +62,6 @@
     function getStats(id) 
     {
         var body = tinymce.get(id).getBody(), text = tinymce.trim(body.innerText || body.textContent);
-
         return text.length
     }
 
@@ -185,7 +184,35 @@
       document.getElementById("texteditor").style.display = "block";
     }
 </script>
+<script>
+ function handleSave(){
+	submit_ramble()
+	$('#rambleModal').modal('toggle')
+  }
 
+    // Prevent Bootstrap dialog from blocking focusin
+    document.addEventListener('focusin', function (e) { if (e.target.closest('.tox-tinymce-aux, .moxman-window, .tam-assetmanager-root') !== null) { e.stopImmediatePropagation(); } });
+    
+     tinymce.init({
+       selector: "textarea",
+       height: 300,
+       plugins: [
+           "advlist autolink lists link image charmap print preview anchor",
+           "searchreplace visualblocks code fullscreen",
+           "insertdatetime media table paste"
+       ],
+       toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+       setup: function(editor) {
+    editor.on('init', function(e) {
+           console.log('The Editor has been initialized.');
+        });
+    },
+
+    init_instance_callback: function (editor) {
+        $(editor.getContainer()).find('button.tox-statusbar__wordcount').click();  // if you use jQuery
+        }
+    });
+    </script>
 <script>
     /* tinymce.init({
         selector: '#new_ramble_post',
@@ -466,36 +493,53 @@
     function hide_post(post_id)
     {
         var hide_div = document.getElementById("hide_"+post_id);
+        
+        var h_status;
         if (document.getElementById("hide_"+post_id).src.endsWith("{% static 'images/unhide.png' %}"))
         {
             console.log("unhiding...");
+            h_status = 1;
             document.getElementById("hide_"+post_id).src = "{% static 'images/hide.png' %}";
         }
         else
         {
+            console.log("hiding...");
+            h_status = 0 ; 
             document.getElementById("hide_"+post_id).src = "{% static 'images/unhide.png' %}";    
+        
         }
 
         data = {
             post_id: post_id,
-        }
-        var ajax = new XMLHttpRequest()
-        ajax.open("POST", "{% url 'hide_a_ramble' %}")
-        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
-        ajax.onreadystatechange = function(response)
-        {
-            console.log(response, this.status, this.readyState)
-            //setInterval('location.reload()', 3000);            
-            document.getElementById("post_"+post_id).style.display = "none";
+            h_status: h_status,
         }
 
-        var formData = new FormData()
-        for(var i in data)
-            formData.append(i, data[i]);
+        var token = '{{csrf_token}}';
 
-        ajax.send(formData)
+        ajaxCall();
+
+
+        function ajaxCall() {
+
+            $.ajax({
+                url: "{% url 'hide_a_ramble' %}",
+                type: "POST",
+                data: { post_id: post_id , h_status: h_status,},
+                headers: { "X-CSRFToken": token },
+                success: function (result) {
+                    post_id = document.getElementById("post_" + post_id);
+                    if (result.hide_status == 0) {
+                        $('#' + post_id.id).hide();
+                    } else {
+                        $('#' + post_id.id).show();
+                    } 
+                }
+            });
+        }
 
     }
+
+  
 
     function amplify_post(post_id)
     {
@@ -992,5 +1036,24 @@ background:white;box-shadow:1px 1px 10px #888; border-radius:8px;overflow-y:scro
         <a href="{% url 'contact_us' %}" style="color: black;"><i class="fa fa-envelope" style="color: black;"></i> Contact</a> 
     </div>   
 </div>
-
+ <!-- Modal -->
+ <div class="modal fade" id="rambleModal" tabindex="-1" aria-labelledby="rambleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="rambleModalLabel">Write a Post</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="post" action="submit_ramble()">
+            <textarea name="content"></textarea>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="handleSave()">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </html>

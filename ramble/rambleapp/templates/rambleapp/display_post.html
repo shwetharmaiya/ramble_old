@@ -1,26 +1,21 @@
 {% load static %}
 {% if not blocked and not muted %}
-{% for hide_post in hide_posts %}
-    {% if hide_post.post_id == post.pk and hide_post.hide_status == 1 %}
-        <script>
-            document.getElementById("post_{{post.pk}}").style.display = "none";
-        </script>
-        {% endif %}
-{% endfor %}
+{% if post.pk not in user_hide_posts %}   
 
-<div id="post_{{post.pk}}" style="transition:all 1s ease" class="post">
+<div id="post_{{post.pk}}" class="post">
     <div id="post_title_id_{{post.pk}}" class="post-title">
-      
         <a href="/post/{{ post.pk }}">{{ post.post_title }}</a>
        
         {% if user.id  %} 
-        <button onclick="hide_post({{ post.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
-            {% if hide_post.hide_status == 1 %}
-                <img id="hide_{{post.pk}}" src="{% static 'images/unhide.png' %}" width="12px" height="12px">
+        
+        <button onclick="hide_post({{ post.pk }})" class="hidebutton, iconbutton" style="margin-left:5px;padding:2px">     
+            {% if user_hide_posts and post.pk in user_hide_posts %}                  
+            <img id="hide_{{post.pk}}" src="{% static 'images/unhide.png' %}" width="12px" height="12px">
             {% else %}
-                <img id="hide_{{post.pk}}" src="{% static 'images/hide.png' %}" width="12px" height="12px">
+            <img id="hide_{{post.pk}}" src="{% static 'images/hide.png' %}" width="12px" height="12px">
             {% endif %}
         </button>
+       
         <!-- <img onclick="hide_post({{ post.pk }})" id="hide_{{post.pk}}" src="{% static 'images/unhide.png' %}" width="12px" height="12px">-->
         
         <button onclick="like_post({{ post.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
@@ -116,5 +111,5 @@
     }
 </script>
 
-
+{% endif %}
 {% endif %}
