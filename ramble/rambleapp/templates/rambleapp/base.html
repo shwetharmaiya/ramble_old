@@ -549,26 +549,32 @@
         {
             console.log("unamplifying...");
             document.getElementById("amplify_"+post_id).src = "{% static 'images/amplify_button.png' %}";
-            amp_count = -1; 
+            amp_count = 0; 
         }
         else
         {   
             document.getElementById("amplify_"+post_id).src = "{% static 'images/amplified_button.png' %}";    
             amp_count = 1;
         }
-        console.log("amp_count");
-        console.log(amp_count);
         data = {
             post_id: post_id,
             amp_count : amp_count           
         }
-        var ajax = new XMLHttpRequest()
-        ajax.open("POST", "{% url 'amplify_a_ramble' %}")
+        var ajax = new XMLHttpRequest();
+        ajax.open("POST", "{% url 'amplify_a_ramble' %}");
         ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
         ajax.onreadystatechange = function(response)
         {
+            amplify_count_id = document.getElementById("amplify_id_" + post_id);
             console.log(response, this.status, this.readyState) 
+            result = JSON.parse(this.response);
+            
             //setInterval('location.reload()', 2000);
+            if (result.amplify_count <= 0) {
+                document.getElementById("amplify_id_" + post_id).hide();
+            } else {
+                document.getElementById("amplify_id_" + post_id).innerHTML = result.amplify_count;
+            }
             $('#amplify_div').load(document.URL +  ' #amplify_div');
         }
 
@@ -577,6 +583,22 @@
             formData.append(i, data[i]);
 
         ajax.send(formData)
+
+    }
+
+    function amplify_post_get(post_id) {
+        $.ajax({
+            url: "{% url 'amplify_a_ramble' %}",
+            type: 'GET',
+            data: { post_id: post_id }, 
+            success: function (res) {
+                console.log(res);
+                if (res.amplify_count > 0 ) { 
+                    document.getElementById("amplify_id_" +  post_id ).style.color = 'blue';
+                    document.getElementById("amplify_id_" +  post_id ).innerHTML = res.amplify_count ;
+                }
+            }
+        });
 
     }
 

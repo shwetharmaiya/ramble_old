@@ -1,4 +1,10 @@
 {% load static %}
+<script>
+    window.addEventListener('load', (event) => {
+        amplify_post_get({{post.pk}});
+    });
+</script>
+
 {% if not blocked and not muted %}
 {% if post.pk not in user_hide_posts %}   
 
@@ -93,12 +99,8 @@
         {% else %}
             <img id="amplify_{{post.pk}}" src="{% static 'images/amplify_button.png' %}" width="12px" height="12px">
         {% endif %}
-        {% for amplify_p in amplify_post.all %}
-            <span id="amplify_id" style="color: black">{{amplify_p.amplify_count}} </span>
-        {% endfor %}
-       </button>
-   
-
+        <span id="amplify_id_{{post.pk}}" style="color: green"></span>      
+    </button>
 </div>
 
 <script>

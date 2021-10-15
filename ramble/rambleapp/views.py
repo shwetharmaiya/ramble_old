@@ -145,8 +145,7 @@ def index(request):
     drafts = Post.objects.filter(status=0).order_by('-post_timestamp')
 
     posts_and_likes = [(post, len(Like.objects.filter(post_id=post) )) for post in posts]
-    amplify_posts = [(post, Post.objects.filter(status=1).values('amplify_count')) for post in posts]
-    
+    amplify_posts = {(Post.objects.filter(pk=post.id,status=1).values('id', 'amplify_count')) for post in posts}
     drafts_and_likes = [(draft, len(Like.objects.filter(post_id=draft))) for draft in drafts]
     user_hide_posts = list(set([hide_post.post_id.id for hide_post in HidePost.objects.filter(hide_status=0)]))
     user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
@@ -454,25 +453,32 @@ def get_rambledraft(request, draft_id):
     return HttpResponse(template.render(total_context, request))
 
 def amplify_post(request):
-    user = Auth_User.objects.get(pk=request.user.id)
-    post_id = request.POST.get('post_id', False)
-    amp_count = int(request.POST.get('amp_count'))
+    if request.method=='POST': 
+        user = Auth_User.objects.get(pk=request.user.id)
+        post_id = request.POST.get('post_id', False)
+        amp_count = int(request.POST.get('amp_count'))
 
-    try:
-        post = Post.objects.get(pk=post_id, status=1)
-    except:
-        return HttpResponse(status=400)
+        try:
+            post = Post.objects.get(pk=post_id, status=1)
+        except:
+            return HttpResponse(status=400)
 
-    if amp_count == -1:
-        post.amplify_count = post.amplify_count - 1
+        if amp_count == 0:
+            post.amplify_count = post.amplify_count - 1
+        else: 
+            post.amplify_count += 1 
+        post.save()
+        post.refresh_from_db()
+        action.send(request.user, verb='amplified/shared content', action_object=post, target= post.user_id)
+        context = { 'amplify_count' : post.amplify_count } 
+        return HttpResponse(json.dumps(context), content_type="application/json", status=200)  
     else: 
-        post.amplify_count += 1 
-    post.save() 
-    post.refresh_from_db()
-    action.send(request.user, verb='amplified/shared content', action_object=post, target= post.user_id)
-    
-    return HttpResponse(status=204)
-  
+        post_id = request.GET.get('post_id', False)
+        amp = [Post.objects.filter(pk=post_id,status=1).values_list('amplify_count', flat=True)]
+        for a in amp:
+            context = { 'amplify_count': a[0] }
+        return HttpResponse(json.dumps(context), content_type="application/json", status=200)
+
 def get_collection(request, collection_id):
     try:
         collection = Collection.objects.get(pk=collection_id)
