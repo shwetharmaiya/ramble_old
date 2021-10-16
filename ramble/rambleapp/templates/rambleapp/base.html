@@ -117,7 +117,7 @@
 
     function submit_ramble()
     {
-        num_chars = getStats('new_ramble_post')
+        num_chars = getStats('mce_1')
         if ( num_chars > 10000) {
             alert("You have exceeded the 10,000 character limit with " + num_chars + " characters")
             return false
@@ -1059,15 +1059,18 @@ background:white;box-shadow:1px 1px 10px #888; border-radius:8px;overflow-y:scro
     </div>   
 </div>
  <!-- Modal -->
- <div class="modal fade" id="rambleModal" tabindex="-1" aria-labelledby="rambleModalLabel" aria-hidden="true">
+ <div class="modal fade" id="rambleModal" tabindex="-1" aria-labelledby="new_ramble_title" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="rambleModalLabel">Write a Post</h5>
+            <input class="modal-title" type="text" id="new_ramble_title" name="new_ramble_title" maxlength="100" placeholder="Title"
+        style="width:100%; margin-bottom:10px; font-size:24px;
+        border-width: thin;box-shadow: inset 0 0 1px 1px #888;
+        padding: 5px 10px 5px 10px; "/>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="post" action="submit_ramble()">
+          <form id="rambleForm" method="post" action="submit_ramble()">
             <textarea name="content"></textarea>
           </form>
         </div>
