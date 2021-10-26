@@ -28,7 +28,9 @@ from simple_aes_cipher import AESCipher, generate_secret_key
 
 from json.encoder import JSONEncoder #json encode for sending json to edit post
     
-# Pages
+from magiclink.helpers import create_magiclink
+
+# Page
 
 def landing_page(request):
     template = loader.get_template('rambleapp/landing_page.html')

@@ -2,9 +2,6 @@
 {% block content %}
 {% load static %}
 {% if post %}
-<script>
-    document.getElementById("texteditor").style.display = "none";
-</script>
     {% include "./display_post.html" %}
 {% elif draft %}
     {% include "./display_draft.html" %}

@@ -2,6 +2,13 @@
 {% block content %}
 {% load static %}
 
+<script>
+    $(".nav li .nav-link").on("click", function(){
+        $("#userDetails").find(".active").removeClass("active");
+        $(this).addClass("active");
+    });
+</script>
+
 {% if profile_user %}
     <div align="center">
         <img src="{{ profile_user_profile.profile_pic.url }}" width="200px"/>
@@ -11,11 +18,21 @@
         <p>{{ profile_user_profile.full_name }} (@{{ profile_user.username}})</p>
         <p> {{ profile_user_profile.bio }}</p>
     </div>
-    <div align="center">
-        <a href="/u/{{ user.id}}/likes"><button id="likes_user_profile" >Likes</button></a>
-        <a href="/u/{{ user.id}}/follows"><button id="follows_user_profile" >Follows</button></a>
-        <a href="/u/{{ user.id}}/followers"><button id="followers_user_profile" >Followers</button></a>
-        <a href="/u/{{ user.id}}/collections"><button id="collections_user_profile" >Collections</button></a>
+    <div id="userDetails" class="container" style="display: flex; justify-content: center; align-items: center;">
+    	<ul class="nav nav-pills">
+    			<li class="nav-item">
+    				<a class="nav-link" aria-current="page" href="/u/{{ user.id}}/likes">Likes</a>
+    			</li>
+    			<li class="nav-item">
+    				<a class="nav-link" href="/u/{{ user.id}}/follows" >Follows</a>
+    			</li>
+    			<li class="nav-item">
+    				<a class="nav-link" href="/u/{{ user.id}}/followers" >Followers</a>
+                </li>
+                <li class="nav-item">
+    				<a class="nav-link" href="/u/{{ user.id}}/collections" >Collections</a>
+    			</li>
+            </ul>
     </div>
     <div align="center">
     <button id="button_block_user_id" onclick="block_user({{ profile_user.pk }}, button_block_user_id)" class="iconbutton" style="margin-left:5px;padding:2px">

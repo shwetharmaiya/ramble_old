@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'postman',
     'actstream',
+    'magiclink',
 ]
 SITE_ID = 1
 POSTMAN_AUTO_MODERATE_AS = True 
@@ -123,6 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = (
+     'magiclink.backends.MagicLinkBackend',
     'social_core.backends.github.GithubOAuth2',
     'social_core.backends.twitter.TwitterOAuth',
     'social_core.backends.facebook.FacebookOAuth2',
@@ -166,3 +168,24 @@ ACTSTREAM_SETTINGS = {
     'GFK_FETCH_DEPTH': 1,
 }
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+# Set Djangos login URL to the magiclink login page
+LOGIN_URL = 'magiclink:login'
+
+MAGICLINK_LOGIN_TEMPLATE_NAME = 'magiclink/login.html'
+MAGICLINK_LOGIN_SENT_TEMPLATE_NAME = 'magiclink/login_sent.html'
+MAGICLINK_LOGIN_FAILED_TEMPLATE_NAME = 'magiclink/login_failed.html'
+
+# Optional:
+# If this setting is set to False a user account will be created the first
+# time a user requests a login link.
+MAGICLINK_REQUIRE_SIGNUP = False
+MAGICLINK_SIGNUP_TEMPLATE_NAME = 'magiclink/signup.html'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'ramble.com'
+EMAIL_PORT = 25
+#EMAIL_HOST_USER = 'user'
+#EMAIL_HOST_PASSWORD = '123'
+EMAIL_USE_TLS = False   
+DEFAULT_FROM_EMAIL = 'user <user@ramble.com>'
