@@ -21,16 +21,16 @@
     <div id="userDetails" class="container" style="display: flex; justify-content: center; align-items: center;">
     	<ul class="nav nav-pills">
     			<li class="nav-item">
-    				<a class="nav-link" aria-current="page" href="/u/{{ user.id}}/likes">Likes</a>
+    				<a class="nav-link" id="id1" onclick= "active('id1')" aria-current="page" href="/u/{{ user.id}}/likes">Likes</a>
     			</li>
     			<li class="nav-item">
-    				<a class="nav-link" href="/u/{{ user.id}}/follows" >Follows</a>
+    				<a class="nav-link" id="id2" onclick= "active('id2')" href="/u/{{ user.id}}/follows" >Follows</a>
     			</li>
     			<li class="nav-item">
-    				<a class="nav-link" href="/u/{{ user.id}}/followers" >Followers</a>
+    				<a class="nav-link" id="id3" onclick= "active('id3')" href="/u/{{ user.id}}/followers" >Followers</a>
                 </li>
                 <li class="nav-item">
-    				<a class="nav-link" href="/u/{{ user.id}}/collections" >Collections</a>
+    				<a class="nav-link" id="id4" onclick= "active('id4')" href="/u/{{ user.id}}/collections" >Collections</a>
     			</li>
             </ul>
     </div>
@@ -50,7 +50,28 @@
         {% endif %}
     </button>
     </div>
-{% else %}
+<script>
+    function check_storage() {
+    //check if there is any value in localStorage
+if (localStorage.getItem("listId") != null) {
+    //get that value
+    var val= localStorage.getItem("listId");
+    console.log(val);
+    setActive(val); //call function
+     }
+     }
+check_storage();
+ function active(id) {
+localStorage.removeItem('listId');//clear previous data
+localStorage.setItem("listId", id);//add data to storage
+console.log(id);
+      }
+
+ function setActive(value) {
+document.getElementById(value).classList.value = "list-group-item  active";
+    }
+</script>
+    {% else %}
     <p> 404 User Not Found</p>
 {% endif %}
 
