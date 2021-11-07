@@ -35,7 +35,7 @@
 		        </button>
 		    </div>
 		    <div class="post-username">
-		       published: <a href="/post/{{ post.pk }}">{{ post.post_timestamp | timesince}} </a> ago by <a href="../u/{{ post.user_id.id }}">{{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
+		       published: <a href="/post/{{ post.pk }}">{{ post.post_timestamp | timesince}} </a> ago by <a href="/u/{{ post.user_id.id }}">{{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
 		        <button class="iconbutton" onclick="follow_user({{ post.user_id.id }})" style="margin-left:5px;padding:2px">
 		            {% if user_followers and post.user_id.id in user_followers %}
 		                <img id="useradd_{{ post.user_id.id }}" src="{% static 'images/follows.png' %}" width="10px" height="10px">

@@ -181,11 +181,3 @@ MAGICLINK_LOGIN_FAILED_TEMPLATE_NAME = 'magiclink/login_failed.html'
 # time a user requests a login link.
 MAGICLINK_REQUIRE_SIGNUP = False
 MAGICLINK_SIGNUP_TEMPLATE_NAME = 'magiclink/signup.html'
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'ramble.com'
-EMAIL_PORT = 25
-#EMAIL_HOST_USER = 'user'
-#EMAIL_HOST_PASSWORD = '123'
-EMAIL_USE_TLS = False   
-DEFAULT_FROM_EMAIL = 'user <user@ramble.com>'
