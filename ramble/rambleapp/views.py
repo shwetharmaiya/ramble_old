@@ -797,9 +797,7 @@ def delete_comment(request):
         return HttpResponse(status=204)
     else:
         return HttpResponse(status=400)
-@login_required
-def edit_post(request):
-    return HttpResponse(status=204)
+
 @login_required
 def like_post(request):
     user_id = request.user.id
@@ -996,3 +994,28 @@ def photo_list(request):
     else:
         form = PhotoForm()
     return render(request, 'album/photo_list.html', {'form': form, 'photos': photos})
+
+def your_stories(request):
+    
+    context = {}
+    
+    template = loader.get_template('rambleapp/your_stories.html')
+    return HttpResponse(template.render(context, request))
+
+def your_stories_published(request):
+    user = Auth_User.objects.get(pk=request.user.id) 
+    posts = Post.objects.filter(user_id=user, status=1).order_by('-post_timestamp')
+   
+    context = {'posts': posts } 
+    
+    template = loader.get_template('rambleapp/your_stories_published.html')
+    return HttpResponse(template.render(context, request))
+
+def your_stories_drafts(request):
+    user = Auth_User.objects.get(pk=request.user.id) 
+    drafts = Post.objects.filter(user_id=user, status=0).order_by('-post_timestamp')
+   
+    context = {'drafts': drafts } 
+    
+    template = loader.get_template('rambleapp/your_stories_drafts.html')
+    return HttpResponse(template.render(context, request))

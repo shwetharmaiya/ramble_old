@@ -18,6 +18,10 @@ urlpatterns = [
   path('mycollections/<int:post_id>', views.get_user_collections, name='mycollections'), 
   path('private_collections', views.post_private_collection, name='private_collections'), 
 
+  path('your_stories', views.your_stories, name='your_stories'),
+  path('your_stories/published', views.your_stories_published, name='your_stories_published'),
+  path('your_stories/drafts', views.your_stories_drafts, name='your_stories_drafts'),
+
   path('post/<int:post_id>', views.get_ramblepost, name='post'),
   path('draft/<int:draft_id>', views.get_rambledraft, name='draft'),
 
@@ -25,7 +29,6 @@ urlpatterns = [
   path('save_draft', views.save_draft, name='save_draft'),
   path('load_draft', views.load_draft, name='load_draft'),
   path('deletepost', views.delete_post, name='delete_a_ramble'),
-  path('editpost', views.edit_post, name='edit_a_ramble'),
   path('get_post/<int:post_id>', views.get_post, name='get_post'),
   path('likepost', views.like_post, name='like_a_ramble'),
   path('convertpost', views.convert_post, name='convert_a_ramble'),

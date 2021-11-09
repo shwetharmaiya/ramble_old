@@ -1,0 +1,6 @@
+{% extends './your_stories.html' %}
+{% block subcontent %}
+	{% for post in posts %}
+     	{% include "./display_post.html" %}
+	{% endfor %}
+{% endblock subcontent %}

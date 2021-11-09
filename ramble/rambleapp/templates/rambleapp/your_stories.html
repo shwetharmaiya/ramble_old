@@ -1,0 +1,48 @@
+{% extends './base.html' %}
+{% block content %}
+{% load static %}
+<script>
+    $(".nav li .nav-link").on("click", function(){
+        $("#YourStoriesDetails").find(".active").removeClass("active");
+        $(this).addClass("active");
+    });
+</script>
+
+<div id="YourStoriesDetails" class="container" style="display: flex; justify-content: start; align-items: center;">
+    <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link" id="id1" onclick= "active('id1')" aria-current="page" href="{% url 'your_stories_published' %}">Published</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="id2" onclick= "active('id2')" href="{% url 'your_stories_drafts' %}" >Drafts</a>
+            </li>
+    </ul>
+</div>
+
+<script>
+    function check_storage() {
+    //check if there is any value in localStorage
+if (localStorage.getItem("storieslistId") != null) {
+    //get that value
+    var val= localStorage.getItem("storieslistId");
+    console.log(val);
+    setActive(val); //call function
+     }
+     }
+check_storage();
+ function active(id) {
+localStorage.removeItem('storieslistId');//clear previous data
+localStorage.setItem("storieslistId", id);//add data to storage
+console.log(id);
+      }
+
+ function setActive(value) {
+document.getElementById(value).classList.value = "list-group-item  active";
+    }
+</script>
+
+
+{% block subcontent %}
+{% endblock subcontent %}
+
+{% endblock %}

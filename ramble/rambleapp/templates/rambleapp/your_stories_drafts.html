@@ -1,0 +1,6 @@
+{% extends './your_stories.html' %}
+{% block subcontent %}
+	{% for draft in drafts %}
+     	{% include "./display_draft.html" %}
+	{% endfor %}
+{% endblock subcontent %}
