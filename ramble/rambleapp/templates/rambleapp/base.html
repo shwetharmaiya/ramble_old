@@ -53,7 +53,7 @@
         "Self-help",
         "Travel"
       ];
-      $( "#new_ramble_tags" ).autocomplete({
+    $( "#rambleForm #new_ramble_tags" ).autocomplete({
         source: availableTags
       });
     } );
@@ -115,9 +115,9 @@
         }
     });
 
-    function submit_ramble()
+    function submit_ramble(id)
     {
-        num_chars = getStats('content')
+        num_chars = getStats(id)
         if ( num_chars > 10000) {
             alert("You have exceeded the 10,000 character limit with " + num_chars + " characters")
             return false
@@ -126,12 +126,19 @@
             alert("Only " + num_chars + " characters? Go on, type more. At least a 1000.")
             return false
         }
-        data = {
-            new_ramble_title: rambleForm.new_ramble_title.value,
-            new_ramble_post: tinyMCE.activeEditor.getContent(),
-            new_ramble_tags: rambleForm.new_ramble_tags.value
+        if (id == "content") { 
+            data = {
+                new_ramble_title: rambleForm.new_ramble_title.value,
+                new_ramble_post: tinyMCE.activeEditor.getContent(),
+                new_ramble_tags: rambleForm.new_ramble_tags.value
+            }
+        } else { 
+            data = {
+                new_ramble_title: editorrambleForm.editor_new_ramble_title.value,
+                new_ramble_post: tinyMCE.activeEditor.getContent(),
+                new_ramble_tags: editorrambleForm.editor_new_ramble_tags.value
+            }
         }
-
             var ajax = new XMLHttpRequest()
             ajax.open("POST", "ramblepost")
             ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
@@ -180,7 +187,7 @@
 </script>
 <script>
  function handleSave(){
-	submit_ramble()
+	submit_ramble('content')
 	$('#rambleModal').modal('toggle')
   }
 
@@ -193,7 +200,7 @@
        plugins: [
            "advlist autolink lists link image charmap print preview anchor",
            "searchreplace visualblocks code fullscreen",
-           "insertdatetime media table paste"
+           "insertdatetime media table paste wordcount"
        ],
        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
        setup: function(editor) {
@@ -925,6 +932,7 @@
                             <li><a class="dropdown-item" href="/u/{{ user.id }}">Your Profile</a></li>
                             <li><a class="dropdown-item" href="/messages/">Your Messages</a></li>
                             <li><a class="dropdown-item" href="/activity/">Your Notifications</a></li>
+                            <li><a class="dropdown-item" href="/editor_page">Write a Post</a></li>
                             
                         </ul>
                     </li>
@@ -1049,6 +1057,7 @@ background:white;box-shadow:1px 1px 10px #888; border-radius:8px;overflow-y:scro
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+            {% csrf_token %}
           <form id="rambleForm" method="post" action="submit_ramble()">
             <label for="new_ramble_title" class="col-form-label" maxlength="100">Title:</label>
             <input type="text" class="form-control" id="new_ramble_title">
@@ -1059,7 +1068,7 @@ background:white;box-shadow:1px 1px 10px #888; border-radius:8px;overflow-y:scro
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="handleSave()">Save changes</button>
+          <button type="button" class="btn btn-primary" onclick="handleSave()">Publish</button>
         </div>
       </div>
     </div>

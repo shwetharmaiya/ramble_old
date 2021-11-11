@@ -22,6 +22,8 @@ urlpatterns = [
   path('your_stories/published', views.your_stories_published, name='your_stories_published'),
   path('your_stories/drafts', views.your_stories_drafts, name='your_stories_drafts'),
 
+  path('editor_page', views.editor_page, name='editor_page'),
+
   path('post/<int:post_id>', views.get_ramblepost, name='post'),
   path('draft/<int:draft_id>', views.get_rambledraft, name='draft'),
 

@@ -1,0 +1,42 @@
+{% extends './base.html' %}
+{% block content %}
+{% load static %}
+<script
+    src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js"
+    referrerpolicy="origin">
+</script>
+
+<script> 
+tinymce.init({
+    selector: "textarea",
+    height: 300,
+    plugins: [
+        "advlist autolink lists link image charmap print preview anchor",
+        "searchreplace visualblocks code fullscreen",
+        "insertdatetime media table paste wordcount"
+    ],
+    toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+    setup: function(editor) {
+ editor.on('init', function(e) {
+        console.log('The Editor has been initialized.');
+     });
+ },
+
+ init_instance_callback: function (editor) {
+     $(editor.getContainer()).find('button.tox-statusbar__wordcount').click();  // if you use jQuery
+     }
+ });
+ 
+</script>
+{% csrf_token %}
+    <div style="text-align:center;padding:0 10%">   
+        <form id="editorrambleForm" method="post" action="submit_ramble()">
+            <label for="editor_new_ramble_title"  maxlength="100"></label>
+            <input type="text" class="form-control" id="editor_new_ramble_title" placeholder="Title">
+            <textarea id="editor_content" name="editor_content" placeholder="Write your Story"></textarea>
+            <input type="text" id="editor_new_ramble_tags" name="new_ramble_tags" maxlength="40" placeholder="Uncategorized"
+            style="width:100%">
+        </form>
+        <button type="button" class="btn btn-primary" onclick="submit_ramble('editor_content')">Publish</button>
+    </div>
+{% endblock %}

@@ -984,6 +984,7 @@ def remove_from_collection(request):
         return HttpResponse(204)
     return HttpResponseForbidden('allowed only via POST')
 
+@login_required
 def photo_list(request):
     photos = Photo.objects.all()
     if request.method == 'POST':
@@ -995,6 +996,7 @@ def photo_list(request):
         form = PhotoForm()
     return render(request, 'album/photo_list.html', {'form': form, 'photos': photos})
 
+@login_required
 def your_stories(request):
     
     context = {}
@@ -1002,6 +1004,7 @@ def your_stories(request):
     template = loader.get_template('rambleapp/your_stories.html')
     return HttpResponse(template.render(context, request))
 
+@login_required
 def your_stories_published(request):
     user = Auth_User.objects.get(pk=request.user.id) 
     posts = Post.objects.filter(user_id=user, status=1).order_by('-post_timestamp')
@@ -1011,6 +1014,7 @@ def your_stories_published(request):
     template = loader.get_template('rambleapp/your_stories_published.html')
     return HttpResponse(template.render(context, request))
 
+@login_required
 def your_stories_drafts(request):
     user = Auth_User.objects.get(pk=request.user.id) 
     drafts = Post.objects.filter(user_id=user, status=0).order_by('-post_timestamp')
@@ -1018,4 +1022,11 @@ def your_stories_drafts(request):
     context = {'drafts': drafts } 
     
     template = loader.get_template('rambleapp/your_stories_drafts.html')
+    return HttpResponse(template.render(context, request))
+
+@login_required
+def editor_page(request):
+    context = { } 
+    
+    template = loader.get_template('rambleapp/editor_page.html')
     return HttpResponse(template.render(context, request))
