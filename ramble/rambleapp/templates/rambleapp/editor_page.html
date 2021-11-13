@@ -37,6 +37,7 @@ tinymce.init({
             <input type="text" id="editor_new_ramble_tags" name="new_ramble_tags" maxlength="40" placeholder="Uncategorized"
             style="width:100%">
         </form>
-        <button type="button" class="btn btn-primary" onclick="submit_ramble('editor_content')">Publish</button>
+        <button type="button" class="btn btn-primary" onclick="submit_ramble('editor_content', true)">Preview</button>
+        <button type="button" class="btn btn-primary" onclick="submit_ramble('editor_content', false)">Publish</button>
     </div>
 {% endblock %}

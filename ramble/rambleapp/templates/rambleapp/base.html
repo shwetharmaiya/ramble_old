@@ -115,35 +115,34 @@
         }
     });
 
-    function submit_ramble(id)
-    {
-        num_chars = getStats(id)
-        if ( num_chars > 10000) {
-            alert("You have exceeded the 10,000 character limit with " + num_chars + " characters")
-            return false
-        } 
-        if (num_chars < 1000) {
-            alert("Only " + num_chars + " characters? Go on, type more. At least a 1000.")
-            return false
-        }
-        if (id == "content") { 
-            data = {
-                new_ramble_title: rambleForm.new_ramble_title.value,
-                new_ramble_post: tinyMCE.activeEditor.getContent(),
-                new_ramble_tags: rambleForm.new_ramble_tags.value
+    function submit_ramble(id, previewItem) {
+        if (previewItem == false) {
+            num_chars = getStats(id)
+            if (num_chars > 10000) {
+                alert("You have exceeded the 10,000 character limit with " + num_chars + " characters")
+                return false
             }
-        } else { 
-            data = {
-                new_ramble_title: editorrambleForm.editor_new_ramble_title.value,
-                new_ramble_post: tinyMCE.activeEditor.getContent(),
-                new_ramble_tags: editorrambleForm.editor_new_ramble_tags.value
+            if (num_chars < 1000) {
+                alert("Only " + num_chars + " characters? Go on, type more. At least a 1000.")
+                return false
             }
-        }
+            if (id == "content") {
+                data = {
+                    new_ramble_title: rambleForm.new_ramble_title.value,
+                    new_ramble_post: tinyMCE.activeEditor.getContent(),
+                    new_ramble_tags: rambleForm.new_ramble_tags.value,
+                }
+            } else {
+                data = {
+                    new_ramble_title: editorrambleForm.editor_new_ramble_title.value,
+                    new_ramble_post: tinyMCE.activeEditor.getContent(),
+                    new_ramble_tags: editorrambleForm.editor_new_ramble_tags.value,
+                }
+            }
             var ajax = new XMLHttpRequest()
             ajax.open("POST", "ramblepost")
             ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
-            ajax.onreadystatechange = function(response)
-            {
+            ajax.onreadystatechange = function (response) {
                 console.log(response, this.status, this.readyState)
 
                 if (this.readyState == 4) {
@@ -152,11 +151,36 @@
             }
 
             var formData = new FormData()
-            for(var i in data)
+            for (var i in data)
                 formData.append(i, data[i]);
 
             ajax.send(formData)
+        } else { 
+            data = {
+                    new_ramble_title: editorrambleForm.editor_new_ramble_title.value,
+                    new_ramble_post: tinyMCE.activeEditor.getContent(),
+                    new_ramble_tags: editorrambleForm.editor_new_ramble_tags.value,
+            }
+            var ajax = new XMLHttpRequest()
+            ajax.open("POST", "save_draft")
+            ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+            ajax.onreadystatechange = function (response) {
+                console.log(response, this.status, this.readyState)
+                const query = new URLSearchParams(window.location.search);
+                query.append("preview", "True");
 
+                if (this.readyState == 4) {
+                    window.location = "draft/" + this.responseText + "?" + query
+                }
+            }
+
+            var formData = new FormData()
+            for (var i in data)
+                formData.append(i, data[i]);
+
+            ajax.send(formData)
+            
+        }
     }
      $(document).ready(function() { 
      $("#draft").on("click", function() { 
@@ -195,7 +219,7 @@
     document.addEventListener('focusin', function (e) { if (e.target.closest('.tox-tinymce-aux, .moxman-window, .tam-assetmanager-root') !== null) { e.stopImmediatePropagation(); } });
     
      tinymce.init({
-       selector: "textarea",
+       selector: "#content",
        height: 300,
        plugins: [
            "advlist autolink lists link image charmap print preview anchor",

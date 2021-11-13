@@ -430,6 +430,7 @@ def get_post(request, post_id):
     return HttpResponse(json.dumps(context), content_type="application/json")
     
 def get_rambledraft(request, draft_id):
+    preview = request.GET.get('preview', False)
     try:
         draft = Post.objects.get(pk=draft_id, status=0)
         #draft_likes = len(Like.objects.filter(post_id=draft))
@@ -450,8 +451,10 @@ def get_rambledraft(request, draft_id):
     loggedin_user_context = twitter_user_context(request)
 
     total_context = {**context, **loggedin_user_context}
-
-    template = loader.get_template('rambleapp/post.html')
+    if preview: 
+        template = loader.get_template('rambleapp/previewpost.html')
+    else:    
+        template = loader.get_template('rambleapp/post.html')
     return HttpResponse(template.render(total_context, request))
 
 def amplify_post(request):

@@ -25,6 +25,7 @@ urlpatterns = [
   path('editor_page', views.editor_page, name='editor_page'),
 
   path('post/<int:post_id>', views.get_ramblepost, name='post'),
+  url(r'^draft/<int:draft_id>?preview=true$', views.get_rambledraft),
   path('draft/<int:draft_id>', views.get_rambledraft, name='draft'),
 
   path('ramblepost', views.post_ramble, name='post_a_ramble'),

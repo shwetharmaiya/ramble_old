@@ -1,0 +1,18 @@
+{% extends './base.html' %}
+{% block content %}
+{% load static %}
+<div class="post-title">
+<a href="/draft/{{ draft.pk }}">{{ draft.post_title }}</a>
+</div>
+<div id="post_txt_{{draft.pk}}" style="max-height:100px;">
+    <p class="post-format">{{ draft.post_text|safe }}</p>
+</div>
+
+<div>
+    Filed under: &nbsp; &nbsp;
+    {% for tag in draft.tags.all %}
+    <a href="/tag/{{ tag }}" class='post-tag'> {{ tag }} </a> &nbsp; &nbsp;
+    {% endfor %}
+</div>
+
+{% endblock %}
