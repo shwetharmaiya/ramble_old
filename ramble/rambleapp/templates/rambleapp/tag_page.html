@@ -1,7 +1,11 @@
 {% extends './base.html' %}
 {% block content %}
 {% load static %}
-<p> Showing posts tagged "{{ tag }}" </p>
+<p> 
+	<h3 style="font-family: sans-serif;">Tags Page</h3>
+	<h4> Showing posts tagged "{{ tag }}" </h4>
+</p>
+
 {% if posts_and_likes %}
 	{% for post, num_likes in posts_and_likes %}
     	{% include "./display_post.html" %}

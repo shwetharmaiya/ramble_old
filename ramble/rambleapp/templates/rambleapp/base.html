@@ -59,6 +59,10 @@
     } );
     </script>
 <script>
+	function closeCollectionModal() {
+     	$("#modalCollectInner").hide();
+	}
+
     function getStats(id) 
     {
         var body = tinymce.get(id).getBody(), text = tinymce.trim(body.innerText || body.textContent);
@@ -982,11 +986,7 @@
     <div style="float: right; font-size: small;">
         {% if user.username %}
             <p>
-        {% if user_profile.full_name %}
-                    Hello <a href="/u/{{ user.id }}"> {{ user_profile.full_name }}! </a>
-                {% else %}
-                    Hello <a href="/u/{{ user.id }}"> {{ user.username }}! </a> 
-                {% endif %}
+              Hello <a href="/u/{{ user.id }}"> {{ user.username }}! </a> 
                 &nbsp; &nbsp;
                 <img src="{{ user_profile.profile_pic.url }}" width="20px"/>
                 <a href="{% url 'logout' %}"><button style="font-size:small">Logout</button></a>
