@@ -19,6 +19,10 @@
         <p>{{ profile_user_profile.full_name }} (@{{ profile_user.username}})</p>
         <p> {{ profile_user_profile.bio }}</p>
     </div>
+    <div style="margin-left: 10px; padding-bottom: 10px;" >
+        <a class="btn btn-primary" href="{% url  'postman:write' profile_user.username %}">Send Message </a>
+    </div>
+    
     <div id="userDetails" class="container">
     	<ul class="nav nav-pills flex-column">
     			<li class="nav-item">
