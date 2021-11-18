@@ -113,27 +113,29 @@
 
   <!-- FORM TO UPLOAD THE IMAGES -->
   <div style="text-align:center">
-    <div style="background-color:white;margin:auto;padding:50px">
-        <p style="font-size:25px"> Let's fill out your profile</p>
+    <p style="font-size:25px"> Let's fill out your profile</p>
+    <div style="background-color:white;margin:auto;padding:50px; display: flex;justify-content: center; align-items: center;">
         <form method="POST" class="post-form" action="{% url 'edit_your_profile' %}" enctype="multipart/form-data">
             {% csrf_token %}
             <table>
               <tbody style="white-space: nowrap;"> 
-              <tr style="margin-bottom: 10px;"><th><label for="id_full_name">Full name:</label></th><td style="padding-bottom: 20px;"><input type="text" name="full_name" maxlength="50" required id="id_full_name"  {% if form.full_name.value != None %}value="{{ form.full_name.value|stringformat:'s' }}"{% endif %} /></td></tr>
-              <tr><th><label for="id_bio">Bio:</label></th><td style="padding-bottom: 20px;"><input type="text" name="bio" maxlength="500" required id="id_bio" {% if form.bio.value != None %}value="{{ form.bio.value|stringformat:'s' }}"{% endif %} /></td></tr>                    
+                <tr style="float: left ; width : 25%"">
+                  <th style="text-align: left;"></th>
+                 <td style="padding-bottom: 20px;text-align: left;" >
+                   <img id="img_profile_pic"  src="{{form.instance.profile_pic.url}}" style="border-radius: 50%; cursor: pointer" alt="Your Image" width="150" height="150">
+                   <input type="file" name="id_profile_pic" id="id_profile_pic" {% if form.profile_pic.value != None %} value="{{ form.profile_pic.value }}"{% endif %} style="display:none;" accept="image/*" />
+                   </td>
+                 </tr>
+               
+              <tr style="margin-bottom: 10px; float: left ; width : 75%;" ><th><label for="id_full_name">Full name:</label></th><td style="padding-bottom: 20px;"><input type="text" name="full_name" maxlength="50" required id="id_full_name"  {% if form.full_name.value != None %}value="{{ form.full_name.value|stringformat:'s' }}"{% endif %} /></td></tr>
+              <tr style="float: left ; width : 75%;""><th><label for="id_bio" style="width:70px;">Bio:</label></th><td style="padding-bottom: 20px;"><input type="text" name="bio" maxlength="500" required id="id_bio" {% if form.bio.value != None %}value="{{ form.bio.value|stringformat:'s' }}"{% endif %} /></td></tr>                    
     
-             <tr>
-               <th style="text-align: left;"></th>
-              <td style="padding-bottom: 20px;text-align: left;" >
-                <img id="img_profile_pic"  src="{{form.instance.profile_pic.url}}" style="border-radius: 50%; cursor: pointer" alt="Your Image" width="150" height="150">
-                <input type="file" name="id_profile_pic" id="id_profile_pic" {% if form.profile_pic.value != None %} value="{{ form.profile_pic.value }}"{% endif %} style="display:none;" accept="image/*" />
-                </td>
-              </tr>
             </tbody>
             
             </table>
-            <button type="submit">Ready To Ramble</button>
+            <button type="submit" style="position: absolute; top: 75%; left: 40%; transform: translate(-50%, -50%);">Ready To Ramble</button>
         </form>
-    </div></div>
+    </div>
+  </div>
 {% endblock %}
 
