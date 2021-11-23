@@ -421,8 +421,10 @@ def get_post(request, post_id):
     try:
         post = Post.objects.get(pk=post_id, status=1)
         tag_names = list(post.tags.names())
-        context = {'text': post.post_text, 'title': post.post_title , 'tags': tag_names } 
-
+        context = {}
+        context['text'] = post.post_text 
+        context['title'] = post.post_title
+        context['tags'] = tag_names
     except Post.DoesNotExist:
         post = None
         context = {}
@@ -1029,7 +1031,10 @@ def your_stories_drafts(request):
 
 @login_required
 def editor_page(request):
-    context = { } 
-    
-    template = loader.get_template('rambleapp/editor_page.html')
-    return HttpResponse(template.render(context, request))
+    post_id = request.POST.get('post_id')
+    print(post_id)
+    if post_id is 0:  
+        context = { }
+    else: 
+        context = {'post_id': post_id}
+    return render(request, "rambleapp/editor_page.html", context)

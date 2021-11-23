@@ -5,9 +5,9 @@
     src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js"
     referrerpolicy="origin">
 </script>
-
-<script> 
-tinymce.init({
+<script>
+    var locationValue = (new URL(location.href)).searchParams.get('post_id') 
+    tinymce.init({
     selector: "textarea",
     height: 300,
     plugins: [
@@ -26,7 +26,19 @@ tinymce.init({
      $(editor.getContainer()).find('button.tox-statusbar__wordcount').click();  // if you use jQuery
      }
  });
- 
+    var locationValue = (new URL(location.href)).searchParams.get('post_id') 
+    if ( locationValue ) { 
+        ajax_get("{% url 'get_post' 123456 %}".replace('123456', locationValue) , false, function(responseText) { 
+            console.log("In editor post id")
+            var { text, title, tags} = JSON.parse(responseText);
+            document.getElementById("editor_content").innerHTML = text
+            document.getElementById("editor_new_ramble_title").value = title
+            document.getElementById("editor_new_ramble_tags").value = tags
+                        
+        })
+    } else {
+        console.log("In editor blank")
+    }
 </script>
 {% csrf_token %}
     <div style="text-align:center;padding:0 10%">   

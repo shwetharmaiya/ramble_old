@@ -503,18 +503,15 @@
 */
     }
     function edit_post(post_id) {
-        tinymce.init({
-            selector: "#new_ramble_post",
-            setup: function (editor) {
-                editor.on('init', function (e) {
-                    ajax_get("{% url 'get_post' 123456 %}".replace('123456', post_id), true, function (responseText) {
-                        var jsonstr = JSON.parse(responseText)
-                        editor.setContent(jsonstr.text);
-                        document.getElementById("new_ramble_title").value=jsonstr.title
-                        document.getElementById("new_ramble_tags").value=jsonstr.tags
-                    })
-                });
+        var token = '{{csrf_token}}';
 
+        $.ajax({
+            url: "{% url 'editor_page' %}",
+            type: "POST",
+            headers: { "X-CSRFToken": token },
+            data: { post_id: post_id }, 
+            success: function(result) {
+                window.location.href = "editor_page?post_id=" + post_id;
             }
         });
     }
