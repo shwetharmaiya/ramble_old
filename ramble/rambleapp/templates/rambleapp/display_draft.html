@@ -22,7 +22,9 @@
                 <img id="collect_{{draft.pk}}" src="{% static 'images/collect_button.png' %}" width="12px" height="12px">
             {% endif %}
         </button>
-
+        <button onclick="edit_draft({{ draft.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
+            <img src="{% static 'images/convertpost.png' %}" width="12px" height="12px">
+        </button>
     </div>
 
     {% if draft.tags.all %}

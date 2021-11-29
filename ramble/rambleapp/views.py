@@ -428,7 +428,19 @@ def get_post(request, post_id):
     except Post.DoesNotExist:
         post = None
         context = {}
+    return HttpResponse(json.dumps(context), content_type="application/json")
         
+def get_draft(request, draft_id):
+    try:
+        draft = Post.objects.get(pk=draft_id, status=0)
+        tag_names = list(draft.tags.names())
+        context = {}
+        context['text'] = draft.post_text 
+        context['title'] = draft.post_title
+        context['tags'] = tag_names
+    except Post.DoesNotExist:
+        draft = None
+        context = {}
     return HttpResponse(json.dumps(context), content_type="application/json")
     
 def get_rambledraft(request, draft_id):

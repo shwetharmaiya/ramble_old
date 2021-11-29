@@ -139,7 +139,7 @@
             } else {
                 data = {
                     new_ramble_title: editorrambleForm.editor_new_ramble_title.value,
-                    new_ramble_post: tinyMCE.activeEditor.getContent(),
+                    new_ramble_post: editorrambleForm.editor_content.innerText,
                     new_ramble_tags: editorrambleForm.editor_new_ramble_tags.value,
                 }
             }
@@ -215,7 +215,7 @@
 </script>
 <script>
  function handleSave(){
-	submit_ramble('content')
+	submit_ramble('content', false)
 	$('#rambleModal').modal('toggle')
   }
 
@@ -511,11 +511,25 @@
             headers: { "X-CSRFToken": token },
             data: { post_id: post_id }, 
             success: function(result) {
-                window.location.href = "editor_page?post_id=" + post_id;
+                window.location.href = "/editor_page?post_id=" + post_id;
             }
         });
     }
     
+    function edit_draft(draft_id) {
+        var token = '{{csrf_token}}';
+
+        $.ajax({
+            url: "{% url 'editor_page' %}",
+            type: "POST",
+            headers: { "X-CSRFToken": token },
+            data: { draft_id: draft_id }, 
+            success: function(result) {
+                window.location.href = "/editor_page?draft_id=" + draft_id;
+            }
+        });
+    }
+
     function hide_post(post_id)
     {
         var hide_div = document.getElementById("hide_"+post_id);

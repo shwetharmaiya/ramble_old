@@ -6,7 +6,18 @@
     referrerpolicy="origin">
 </script>
 <script>
-    var locationValue = (new URL(location.href)).searchParams.get('post_id') 
+    try { 
+        var post_id = (new URL(location.href)).searchParams.get('post_id') 
+    }
+    catch { 
+        console.log("No post")
+    } 
+    try { 
+        var draft_id = (new URL(location.href)).searchParams.get('draft_id')
+    }
+    catch { 
+        console.log("No draft")
+    }
     tinymce.init({
     selector: "textarea",
     height: 300,
@@ -26,19 +37,26 @@
      $(editor.getContainer()).find('button.tox-statusbar__wordcount').click();  // if you use jQuery
      }
  });
-    var locationValue = (new URL(location.href)).searchParams.get('post_id') 
-    if ( locationValue ) { 
-        ajax_get("{% url 'get_post' 123456 %}".replace('123456', locationValue) , false, function(responseText) { 
+    
+    if ( post_id ) { 
+        ajax_get("{% url 'get_post' 123456 %}".replace('123456', post_id) , false, function(responseText) { 
             console.log("In editor post id")
+            var { text, title, tags} = JSON.parse(responseText);
+            document.getElementById("editor_content").innerHTML = text
+            document.getElementById("editor_new_ramble_title").value = title
+            document.getElementById("editor_new_ramble_tags").value = tags               
+        })
+    } else {
+        console.log("Draft id is"+ draft_id)
+        ajax_get("{% url 'get_draft' 123456 %}".replace('123456', draft_id) , false, function(responseText) { 
+            console.log("In editor draft id")
             var { text, title, tags} = JSON.parse(responseText);
             document.getElementById("editor_content").innerHTML = text
             document.getElementById("editor_new_ramble_title").value = title
             document.getElementById("editor_new_ramble_tags").value = tags
                         
         })
-    } else {
-        console.log("In editor blank")
-    }
+     }
 </script>
 {% csrf_token %}
     <div style="text-align:center;padding:0 10%">   
@@ -49,7 +67,47 @@
             <input type="text" id="editor_new_ramble_tags" name="new_ramble_tags" maxlength="40" placeholder="Uncategorized"
             style="width:100%">
         </form>
-        <button type="button" class="btn btn-primary" onclick="submit_ramble('editor_content', true)">Preview</button>
-        <button type="button" class="btn btn-primary" onclick="submit_ramble('editor_content', false)">Publish</button>
+        <button id="previewbutton" type="button" class="btn btn-primary" onclick="submit_ramble('editor_content', true)">Preview</button>
+        <button id="publishbutton" type="button" class="btn btn-primary" onclick="aftereffects()">Publish/UnPublish</button>
     </div>
+<script>
+    function aftereffects() { 
+    try { 
+        if (post_id != null || post_id != None) { 
+       //document.getElementById("publishbutton").innerHTML = "UnPublish"
+       let pbutton = document.getElementById("publishbutton")
+       
+        pbutton.addEventListener("click", () => {  
+        console.log("In save draft script");
+        if ( tinyMCE.activeEditor !== null ) { 
+          data = {
+              new_ramble_title: editor_new_ramble_title.value,
+              new_ramble_post: editor_content.innerText,
+              new_ramble_tags: editor_new_ramble_tags.value
+          }
+        }
+       
+        $.ajax({
+            url:'save_draft',
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: data,
+            type: 'POST',
+            success: function(responseText) {
+                console.log('Saved the draft.')
+                window.location = "/draft/" + responseText 
+            }
+        });
+    });
+    pbutton.click()
+        }
+    }
+    catch  { 
+        let pbutton = document.getElementById("publishbutton")
+        pbutton.addEventListener("click", () => {
+            submit_ramble('editor_content', false)
+        });
+        pbutton.click()
+    }
+    }
+</script>
 {% endblock %}
