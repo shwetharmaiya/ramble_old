@@ -261,6 +261,9 @@ def get_user_profile(request, user_id):
         user_posts = Post.objects.filter(user_id=profile_user).order_by('-post_timestamp')
         hide_posts = [(post, HidePost.objects.filter(post_id=post, hide_status=1)) for post in user_posts]
         user_posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in user_posts]
+        profile_user_followers = [follow.follower_id for follow in Follow.objects.filter(followee_id=profile_user)]
+        followers_profiles = Profile.objects.all().filter(user_id__in=profile_user_followers)
+        len_followers = len(followers_profiles)
         try:
             profile_user_profile = Profile.objects.get(user_id=request.user.id)
         except: 
@@ -274,7 +277,8 @@ def get_user_profile(request, user_id):
                    'profile_user_profile': profile_user_profile,
                     'blocked': blocked,
                     'muted': muted,
-                    'hide_posts': hide_posts
+                    'hide_posts': hide_posts,
+                    'len_followers' : len_followers 
                     }
     else:
         profile_context = {}

@@ -220,14 +220,11 @@
   }
  function handleSaveDraft() { 
         console.log("In save draft");
-        if ( tinyMCE.activeEditor !== null ) { 
           data = {
               new_ramble_title: rambleForm.new_ramble_title.value,
-              new_ramble_post: tinyMCE.activeEditor.getContent(),
+              new_ramble_post: rambleForm.children[2].value,
               new_ramble_tags: rambleForm.new_ramble_tags.value
           }
-        }
-       
         $.ajax({
             url:'save_draft',
             headers: {'X-CSRFToken': '{{ csrf_token }}'},

@@ -154,7 +154,7 @@
         {% endif %}
     </div>
     <div class="post-username">
-       published: <a href="/post/{{ post.pk }}">{{ post.post_timestamp | timesince}} </a> ago by <a href="../u/{{ post.user_id.id }}">{{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
+       published: <a href="/post/{{ post.pk }}">{{ post.post_timestamp | timesince}} </a> ago by <a href="/u/{{ post.user_id.id }}">{{ post.user_id.username }}</a>
          {% if user_profile and post.user_id.id == user_profile.user_id.id %}
                 That's you! 
          {% else %}

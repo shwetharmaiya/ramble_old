@@ -46,7 +46,7 @@
             document.getElementById("editor_new_ramble_title").value = title
             document.getElementById("editor_new_ramble_tags").value = tags               
         })
-    } else {
+    } else if (draft_id){
         console.log("Draft id is"+ draft_id)
         ajax_get("{% url 'get_draft' 123456 %}".replace('123456', draft_id) , false, function(responseText) { 
             console.log("In editor draft id")
@@ -56,6 +56,10 @@
             document.getElementById("editor_new_ramble_tags").value = tags
                         
         })
+     } else { 
+        post_id =  false
+        draft_id = false
+
      }
 </script>
 {% csrf_token %}
