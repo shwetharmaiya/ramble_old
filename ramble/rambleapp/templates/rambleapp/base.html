@@ -139,7 +139,7 @@
             } else {
                 data = {
                     new_ramble_title: editorrambleForm.editor_new_ramble_title.value,
-                    new_ramble_post: editorrambleForm.editor_content.innerText,
+                    new_ramble_post: tinyMCE.activeEditor.getContent(),
                     new_ramble_tags: editorrambleForm.editor_new_ramble_tags.value,
                 }
             }
@@ -1101,7 +1101,7 @@ background:white;box-shadow:1px 1px 10px #888; border-radius:8px;overflow-y:scro
 </div>
 </div>
 <div class="footer">
-    <div style="float: right ;padding-right: 20px; margin-top: 20px; position: relative;
+    <div style="float: right ;padding-right: 20px; margin-top: 20px; position: fixed;
  ; bottom: 0px; right: 0px">
         <a href="{% url 'contact_us' %}" style="color: black;"><i class="fa fa-envelope" style="color: black;"></i> Contact</a> 
     </div>   

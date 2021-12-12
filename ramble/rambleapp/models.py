@@ -10,6 +10,8 @@ import ramble.settings as settings
 
 from actstream import registry
 
+from django.utils import timezone #to solve Runtime error on datetimefield
+
 # Create your models here.
 
 class InterestedUsers(models.Model):
@@ -37,7 +39,7 @@ class Post(models.Model):
         Publish = 1
 
     user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
-    post_timestamp = models.DateTimeField(default=datetime.now)
+    post_timestamp = models.DateTimeField(default=timezone.now)
     post_title = models.CharField(max_length=100)
     post_text = models.CharField(max_length=10000)
     tags = TaggableManager()

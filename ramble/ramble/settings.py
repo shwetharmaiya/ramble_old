@@ -172,7 +172,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # Set Djangos login URL to the magiclink login page
 LOGIN_URL = 'magiclink:login'
 
-MAGICLINK_LOGIN_TEMPLATE_NAME = 'magiclink/login.html'
+MAGICLINK_LOGIN_TEMPLATE_NAME = 'magiclink/login_ml.html'
 MAGICLINK_LOGIN_SENT_TEMPLATE_NAME = 'magiclink/login_sent.html'
 MAGICLINK_LOGIN_FAILED_TEMPLATE_NAME = 'magiclink/login_failed.html'
 

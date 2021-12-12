@@ -597,7 +597,7 @@ def login(request):
         twitter_login = None
     except AttributeError:
         twitter_login = None
-    template = loader.get_template('rambleapp/login.html')
+    template = loader.get_template('magiclink/login_ml.html')
 
     if twitter_login is None and user is not False and pswd is not False: 
         user = authenticate(request, username=user, password=pass_key)

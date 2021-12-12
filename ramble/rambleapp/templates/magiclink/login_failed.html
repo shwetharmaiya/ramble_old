@@ -1,0 +1,52 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- SRM -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="shortcut icon" type="image/png" href="{% static 'images/fleuron_transparent_icon.ico' %}"/>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <title>Ramble - Write, Read, Curate - Login</title>
+
+</head>
+
+<body style="margin:10px 10px 10px 10px;">
+  <div class="header">
+    <nav class="navbar navbar-light navbar-1 white">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#""></a>
+        </div>
+    </nav>
+  
+    <a href="#"><img class="headerimg" src="{% static 'images/fleuron_header_reverse_transparent.png' %}" width=300px"
+         style="margin-right:5px;margin-top:5px;background-color:#fcfcfc"/></a>
+  </div>
+  <h1>Login failed</h1>
+  <p>It was not possible to log you in due to:</p>
+  <p>{{ login_error }}</p>
+
+  <p>There are several possible ways for logins to fail with the current Django MagicLink settings:</p>
+  <ul>
+    <li>The URL you are trying to use is malformed</li>
+    <li>The magic link you tried to use has expired</li>
+    <li>You have already used this magic link to login before</li>
+    {% if ONE_TOKEN_PER_USER %}
+    <li>You have requested another magic causing this magic link to become invalid</li>
+    {% endif %}
+    {% if REQUIRE_SAME_BROWSER %}
+    <li>You are using a different browser to when you requested the login link</li>
+    {% endif %}
+    {% if REQUIRE_SAME_IP %}
+    <li>You are trying to login from a different location or machine that you requested the login link from</li>
+    {% endif %}
+    {% if not ALLOW_SUPERUSER_LOGIN or not ALLOW_STAFF_LOGIN %}
+    <li>You are a superuser or staff user</li>
+    {% endif %}
+  </ul>
+
+</body>
+</html>

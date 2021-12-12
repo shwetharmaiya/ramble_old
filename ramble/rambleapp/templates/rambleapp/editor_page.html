@@ -77,7 +77,7 @@
 <script>
     function aftereffects() { 
     try { 
-        if (post_id != null || post_id != None) { 
+        if (post_id != null && post_id != None && (post_id != false && draft_id != false)) { 
        //document.getElementById("publishbutton").innerHTML = "UnPublish"
        let pbutton = document.getElementById("publishbutton")
        
