@@ -265,7 +265,7 @@ def get_user_profile(request, user_id):
         followers_profiles = Profile.objects.all().filter(user_id__in=profile_user_followers)
         len_followers = len(followers_profiles)
         try:
-            profile_user_profile = Profile.objects.get(user_id=request.user.id)
+            profile_user_profile = Profile.objects.get(user_id=profile_user)
         except: 
             template = loader.get_template('404.html')
             context = {}
@@ -297,7 +297,7 @@ def get_user_profile_likes(request, user_id):
     except Auth_User.DoesNotExist:
         profile_user = None
     if profile_user:
-        profile_user_profile = Profile.objects.get(user_id=request.user.id)
+        profile_user_profile = Profile.objects.get(user_id=profile_user)
         profile_user_likes = [like.post_id for like in Like.objects.filter(user_id=profile_user)]
         profile_user_posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in profile_user_likes]
 
